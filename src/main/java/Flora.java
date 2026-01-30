@@ -18,9 +18,8 @@ public class Flora {
             System.out.println();
 
             input = sc.nextLine();
-            System.out.println(input);
-
             System.out.println(line);
+
             if (input.equalsIgnoreCase("bye")) {
                 System.out.println(farewell);
                 break;
