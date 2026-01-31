@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Flora {
     private static final String line = "    ____________________________________________________________";
@@ -7,18 +8,16 @@ public class Flora {
     private static final String greeting = indent + "Hi there! Flora here.\n" + indent + "Ask me anything!";
     private static final String farewell = indent + "Talk to you later—bye!";
 
-    private final Task[] tasks;
-    private int taskCount;
+    private final ArrayList<Task> tasks;
 
     public Flora() {
-        this.tasks = new Task[100];
-        this.taskCount = 0;
+        this.tasks = new ArrayList<>();
     }
 
     public void listTasks() {
         System.out.println(indent + "Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println(indent + (i + 1) + "." + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(indent + (i + 1) + "." + tasks.get(i));
         }
     }
 
@@ -28,11 +27,11 @@ public class Flora {
         }
 
         Todo todo = new Todo(taskDesc);
-        tasks[taskCount++] = todo;
+        tasks.add(todo);
 
         System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + todo);
-        System.out.println(indent + "Now you have " + taskCount + " task" + (taskCount > 1 ? "s" : "") + " in the list.");
+        System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
     }
 
     public void addDeadline(String taskDesc, String dueDate) throws FloraException {
@@ -45,11 +44,11 @@ public class Flora {
         }
 
         Deadline deadline = new Deadline(taskDesc, dueDate);
-        tasks[taskCount++] = deadline;
+        tasks.add(deadline);
 
         System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + deadline);
-        System.out.println(indent + "Now you have " + taskCount + " task" + (taskCount > 1 ? "s" : "") + " in the list.");
+        System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
     }
 
     public void addEvent(String taskDesc, String startTime, String endTime) throws FloraException {
@@ -66,11 +65,26 @@ public class Flora {
         }
 
         Event event = new Event(taskDesc, startTime, endTime);
-        tasks[taskCount++] = event;
+        tasks.add(event);
 
         System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + event);
-        System.out.println(indent + "Now you have " + taskCount + " task" + (taskCount > 1 ? "s" : "") + " in the list.");
+        System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
+    }
+
+    public void deleteTask(Integer index) throws FloraException {
+        if (index == null) {
+            throw new FloraException("At least put the index bro");
+        }
+
+        if (index < 1 || index > tasks.size()) {
+            throw new FloraException("Bro's out of bounds");
+        }
+
+        System.out.println(indent + "Nice! I've marked this task as done:");
+        System.out.println(indent + "  " + tasks.remove(index - 1));
+
+        System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
     }
 
     public void markTask(Integer index) throws FloraException {
@@ -78,11 +92,11 @@ public class Flora {
             throw new FloraException("At least put the index bro");
         }
 
-        if (index < 1 || index > taskCount) {
+        if (index < 1 || index > tasks.size()) {
             throw new FloraException("Bro's out of bounds");
         }
 
-        Task task = tasks[index - 1];
+        Task task = tasks.get(index - 1);
         task.markAsDone();
 
         System.out.println(indent + "Nice! I've marked this task as done:");
@@ -94,11 +108,11 @@ public class Flora {
             throw new FloraException("At least put the index bro");
         }
 
-        if (index < 1 || index > taskCount) {
+        if (index < 1 || index > tasks.size()) {
             throw new FloraException("Bro's out of bounds");
         }
 
-        Task task = tasks[index - 1];
+        Task task = tasks.get(index - 1);
         task.markAsNotDone();
 
         System.out.println(indent + "OK, I've marked this task as not done yet:");
@@ -175,6 +189,22 @@ public class Flora {
 
                 try {
                     addEvent(taskDesc, startTime, endTime);
+                } catch (FloraException e) {
+                    System.out.println(indent + e.getMessage());
+                }
+
+                break;
+            }
+
+            case "delete": {
+                Integer taskIndex = null;
+                if (firstSpaceIndex != -1 && firstSpaceIndex + 1 < input.length()) {
+                    String taskIndexStr = input.substring(firstSpaceIndex + 1);
+                    taskIndex = Integer.parseInt(taskIndexStr);
+                }
+
+                try {
+                    deleteTask(taskIndex);
                 } catch (FloraException e) {
                     System.out.println(indent + e.getMessage());
                 }
