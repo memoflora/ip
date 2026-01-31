@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Random;
 
 public class Flora {
     private static final String line = "    ____________________________________________________________";
@@ -21,38 +22,66 @@ public class Flora {
         }
     }
 
-    public void addTodo(String taskDesc) {
-        System.out.println(indent + "Got it. I've added this task:");
+    public void addTodo(String taskDesc) throws FloraException {
+        if (taskDesc == null) {
+            throw new FloraException("At least put something bro");
+        }
 
         Todo todo = new Todo(taskDesc);
         tasks[taskCount++] = todo;
 
+        System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + todo);
         System.out.println(indent + "Now you have " + taskCount + " task" + (taskCount > 1 ? "s" : "") + " in the list.");
     }
 
-    public void addDeadline(String taskDesc, String dueDate) {
-        System.out.println(indent + "Got it. I've added this task:");
+    public void addDeadline(String taskDesc, String dueDate) throws FloraException {
+        if (taskDesc == null) {
+            throw new FloraException("At least put something bro");
+        }
+
+        if (dueDate == null) {
+            throw new FloraException("At least set a due date bro");
+        }
 
         Deadline deadline = new Deadline(taskDesc, dueDate);
         tasks[taskCount++] = deadline;
 
+        System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + deadline);
         System.out.println(indent + "Now you have " + taskCount + " task" + (taskCount > 1 ? "s" : "") + " in the list.");
-
     }
 
-    public void addEvent(String taskDesc, String startTime, String endTime) {
-        System.out.println(indent + "Got it. I've added this task:");
+    public void addEvent(String taskDesc, String startTime, String endTime) throws FloraException {
+        if (taskDesc == null) {
+            throw new FloraException("At least put something bro");
+        }
+
+        if (startTime == null) {
+            throw new FloraException("At least set a start time bro");
+        }
+
+        if (endTime == null) {
+            throw new FloraException("At least set an end time bro");
+        }
 
         Event event = new Event(taskDesc, startTime, endTime);
         tasks[taskCount++] = event;
 
+        System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + event);
         System.out.println(indent + "Now you have " + taskCount + " task" + (taskCount > 1 ? "s" : "") + " in the list.");
     }
 
-    public void markTask(int index) {
+    public void markTask(Integer index) throws FloraException {
+        if (index == null) {
+            throw new FloraException("At least put the index bro");
+        }
+
+        if (index < 1 || index > taskCount) {
+            throw new FloraException("Bro's out of bounds");
+        }
+
         Task task = tasks[index - 1];
         task.markAsDone();
 
@@ -60,12 +89,148 @@ public class Flora {
         System.out.println(indent + "  " + task);
     }
 
-    public void unmarkTask(int index) {
+    public void unmarkTask(Integer index) throws FloraException {
+        if (index == null) {
+            throw new FloraException("At least put the index bro");
+        }
+
+        if (index < 1 || index > taskCount) {
+            throw new FloraException("Bro's out of bounds");
+        }
+
         Task task = tasks[index - 1];
         task.markAsNotDone();
 
         System.out.println(indent + "OK, I've marked this task as not done yet:");
         System.out.println(indent + "  " + task);
+    }
+
+    public boolean handleInput(String input) throws FloraException {
+        String command = input;
+        int firstSpaceIndex = input.indexOf(" ");
+
+        if (firstSpaceIndex != -1) {
+            command = input.substring(0, firstSpaceIndex);
+        }
+
+        switch (command.toLowerCase()) {
+            case "todo": {
+                String taskDesc = null;
+                if (firstSpaceIndex != -1 && firstSpaceIndex + 1 < input.length()) {
+                    taskDesc = input.substring(firstSpaceIndex + 1);
+                }
+
+                try {
+                    addTodo(taskDesc);
+                } catch (FloraException e) {
+                    System.out.println(indent + e.getMessage());
+                }
+
+                break;
+            }
+
+            case "deadline" : {
+                String taskDesc = null;
+                String dueDate = null;
+
+                if (firstSpaceIndex != -1 && firstSpaceIndex + 1 < input.length()) {
+                    taskDesc = input.substring(firstSpaceIndex + 1);
+                    int byIndex = input.indexOf("/by");
+
+                    if (byIndex != -1 && byIndex + 4 < input.length()) {
+                        taskDesc = input.substring(firstSpaceIndex + 1, byIndex - 1);
+                        dueDate = input.substring(byIndex + 4);
+                    }
+                }
+
+                try {
+                    addDeadline(taskDesc, dueDate);
+                } catch (FloraException e) {
+                    System.out.println(indent + e.getMessage());
+                }
+
+                break;
+            }
+
+            case "event" : {
+                String taskDesc = null;
+                String startTime = null;
+                String endTime = null;
+
+                if (firstSpaceIndex != -1) {
+                    taskDesc = input.substring(firstSpaceIndex + 1);
+                    int fromIndex = input.indexOf("/from");
+
+                    if (fromIndex != -1 && fromIndex + 6 < input.length()) {
+                        startTime = input.substring(fromIndex + 6);
+                        int toIndex = input.indexOf("/to");
+
+                        if (toIndex != -1 && toIndex + 4 < input.length()) {
+                            taskDesc = input.substring(firstSpaceIndex + 1, fromIndex - 1);
+                            startTime = input.substring(fromIndex + 6, toIndex - 1);
+                            endTime = input.substring(toIndex + 4);
+                        }
+                    }
+                }
+
+                try {
+                    addEvent(taskDesc, startTime, endTime);
+                } catch (FloraException e) {
+                    System.out.println(indent + e.getMessage());
+                }
+
+                break;
+            }
+
+            case "mark": {
+                Integer taskIndex = null;
+                if (firstSpaceIndex != -1 && firstSpaceIndex + 1 < input.length()) {
+                    String taskIndexStr = input.substring(firstSpaceIndex + 1);
+                    taskIndex = Integer.parseInt(taskIndexStr);
+                }
+
+                try {
+                    markTask(taskIndex);
+                } catch (FloraException e) {
+                    System.out.println(indent + e.getMessage());
+                }
+
+                break;
+            }
+
+            case "unmark": {
+                Integer taskIndex = null;
+                if (firstSpaceIndex != -1 && firstSpaceIndex + 1 < input.length()) {
+                    String taskIndexStr = input.substring(firstSpaceIndex + 1);
+                    taskIndex = Integer.parseInt(taskIndexStr);
+                }
+
+                try {
+                    unmarkTask(taskIndex);
+                } catch (FloraException e) {
+                    System.out.println(indent + e.getMessage());
+                }
+
+                break;
+            }
+
+            case "list":
+                listTasks();
+                break;
+            case "bye":
+                System.out.println(farewell);
+                System.out.println(line);
+                return false;
+            default:
+                String[] strings = {"I guess bro", "Whatever that means"};
+                Random rand = new Random(System.currentTimeMillis());
+                int randomIndex = rand.nextInt(strings.length);
+                String exceptionMessage = strings[randomIndex];
+
+                throw new FloraException(exceptionMessage);
+        }
+
+        return true;
     }
 
     public static void main(String[] args) {
@@ -77,77 +242,19 @@ public class Flora {
         System.out.println(line);
         System.out.println(greeting);
 
-        boolean exit = false;
-        while (!exit) {
+        boolean continueLoop = true;
+        while (continueLoop) {
             System.out.println(line);
             System.out.println();
 
             input = sc.nextLine();
-
-            int firstSpaceIndex = input.indexOf(" ");
-            String command;
-
-            if (firstSpaceIndex != -1) {
-                command = input.substring(0, firstSpaceIndex);
-            } else {
-                command = input;
-            }
-
             System.out.println(line);
 
-            switch (command.toLowerCase()) {
-                case "todo": {
-                    String taskDesc = input.substring(firstSpaceIndex + 1);
-                    flora.addTodo(taskDesc);
-                    break;
-                }
-
-                case "deadline" : {
-                    int byIndex = input.indexOf("/by");
-
-                    String taskDesc = input.substring(firstSpaceIndex + 1, byIndex - 1);
-                    String dueDate = input.substring(byIndex + 4);
-
-                    flora.addDeadline(taskDesc, dueDate);
-                    break;
-                }
-
-                case "event" : {
-                    int fromIndex = input.indexOf("/from");
-                    int toIndex = input.indexOf("/to");
-
-                    String taskDesc = input.substring(firstSpaceIndex + 1, fromIndex - 1);
-                    String startTime = input.substring(fromIndex + 6, toIndex - 1);
-                    String endTime = input.substring(toIndex + 4);
-
-                    flora.addEvent(taskDesc, startTime, endTime);
-                    break;
-                }
-
-                case "mark": {
-                    String taskIndex = input.substring(firstSpaceIndex + 1);
-                    flora.markTask(Integer.parseInt(taskIndex));
-                    break;
-                }
-
-                case "unmark": {
-                    String taskIndex = input.substring(firstSpaceIndex + 1);
-                    flora.unmarkTask(Integer.parseInt(taskIndex));
-                    break;
-                }
-
-                case "list":
-                    flora.listTasks();
-                    break;
-                case "bye":
-                    System.out.println(farewell);
-                    exit = true;
-                    break;
-                default:
-                    System.out.println(input);
+            try {
+                continueLoop = flora.handleInput(input);
+            } catch (FloraException e) {
+                System.out.println(indent + e.getMessage());
             }
         }
-
-        System.out.println(line);
     }
 }
