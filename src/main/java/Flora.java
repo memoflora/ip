@@ -81,10 +81,10 @@ public class Flora {
             throw new FloraException("Bro's out of bounds");
         }
 
-        System.out.println(indent + "Nice! I've marked this task as done:");
+        System.out.println(indent + "Noted. I've removed this task:");
         System.out.println(indent + "  " + tasks.remove(index - 1));
 
-        System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
+        System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
     }
 
     public void markTask(Integer index) throws FloraException {
