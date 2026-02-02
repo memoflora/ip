@@ -4,7 +4,17 @@ public class Todo extends Task {
     }
 
     @Override
+    public String getType() {
+        return "T";
+    }
+
+    @Override
+    public String toFileString() {
+        return super.toFileString();
+    }
+
+    @Override
     public String toString() {
-        return "[T]" + super.toString();
+        return super.toString();
     }
 }

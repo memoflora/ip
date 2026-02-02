@@ -7,10 +7,6 @@ public abstract class Task {
         this.isDone = false;
     }
 
-    public String getStatus() {
-        return "[" + (isDone ? "X" : " ") + "]";
-    }
-
     public void markAsDone() {
         isDone = true;
     }
@@ -19,8 +15,14 @@ public abstract class Task {
         isDone = false;
     }
 
+    public abstract String getType();
+
+    public String toFileString() {
+        return getType() + " | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
     @Override
     public String toString() {
-        return getStatus() + " " + description;
+        return "[" + getType() + "][" + (isDone ? "X" : " ") + "] " + description;
     }
 }

@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.ArrayList;
@@ -9,9 +10,27 @@ public class Flora {
     private static final String farewell = indent + "Talk to you later—bye!";
 
     private final ArrayList<Task> tasks;
+    private final Storage storage;
 
     public Flora() {
-        this.tasks = new ArrayList<>();
+        storage = new Storage("./data/flora.txt");
+        ArrayList<Task> loadedTasks;
+
+        try {
+            loadedTasks = storage.load();
+        } catch (IOException e) {
+            loadedTasks = new ArrayList<>();
+        }
+
+        this.tasks = loadedTasks;
+    }
+
+    public void saveTasks() {
+        try {
+            storage.save(tasks);
+        } catch (IOException e) {
+            System.out.println(indent + "Error saving tasks: " + e.getMessage());
+        }
     }
 
     public void listTasks() {
@@ -28,6 +47,7 @@ public class Flora {
 
         Todo todo = new Todo(taskDesc);
         tasks.add(todo);
+        saveTasks();
 
         System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + todo);
@@ -45,6 +65,7 @@ public class Flora {
 
         Deadline deadline = new Deadline(taskDesc, dueDate);
         tasks.add(deadline);
+        saveTasks();
 
         System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + deadline);
@@ -66,6 +87,7 @@ public class Flora {
 
         Event event = new Event(taskDesc, startTime, endTime);
         tasks.add(event);
+        saveTasks();
 
         System.out.println(indent + "Got it. I've added this task:");
         System.out.println(indent + "  " + event);
@@ -83,6 +105,7 @@ public class Flora {
 
         System.out.println(indent + "Noted. I've removed this task:");
         System.out.println(indent + "  " + tasks.remove(index - 1));
+        saveTasks();
 
         System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
     }
@@ -98,6 +121,7 @@ public class Flora {
 
         Task task = tasks.get(index - 1);
         task.markAsDone();
+        saveTasks();
 
         System.out.println(indent + "Nice! I've marked this task as done:");
         System.out.println(indent + "  " + task);
@@ -114,6 +138,7 @@ public class Flora {
 
         Task task = tasks.get(index - 1);
         task.markAsNotDone();
+        saveTasks();
 
         System.out.println(indent + "OK, I've marked this task as not done yet:");
         System.out.println(indent + "  " + task);

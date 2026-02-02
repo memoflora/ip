@@ -9,7 +9,17 @@ public class Event extends Task {
     }
 
     @Override
+    public String getType() {
+        return "E";
+    }
+
+    @Override
+    public String toFileString() {
+        return super.toFileString() + " | " + startTime + " | " + endTime;
+    }
+
+    @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + startTime + " to: " + endTime + ")";
+        return super.toString() + " (from: " + startTime + " to: " + endTime + ")";
     }
 }

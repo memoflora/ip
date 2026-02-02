@@ -7,7 +7,17 @@ public class Deadline extends Task {
     }
 
     @Override
+    public String getType() {
+        return "D";
+    }
+
+    @Override
+    public String toFileString() {
+        return super.toFileString() + " | " + dueDate;
+    }
+
+    @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + dueDate + ")";
+        return super.toString() + " (by: " + dueDate + ")";
     }
 }
