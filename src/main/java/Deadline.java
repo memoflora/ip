@@ -1,23 +1,45 @@
-public class Deadline extends Task {
-    private final String dueDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
-    public Deadline(String description, String dueDate) {
+public class Deadline extends Task {
+    private final LocalDateTime due;
+
+    public Deadline(String description, LocalDateTime due) {
         super(description);
-        this.dueDate = dueDate;
+        this.due = due;
+    }
+
+    private String dateTimeToFileString(LocalDateTime dateTime) {
+        DateTimeFormatter dateTimeFileFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
+        if (!dateTime.toLocalTime().equals(LocalTime.MIDNIGHT)) {
+            return dateTime.format(dateTimeFileFmt);
+        } else {
+            return dateTime.toLocalDate().format(dateTimeFileFmt);
+        }
+    }
+
+    private String dateTimeToString(LocalDateTime dateTime) {
+        DateTimeFormatter dateTimeFmt = DateTimeFormatter.ofPattern("d MMM yyyy[ 'at' HH:mm]");
+        if (!dateTime.toLocalTime().equals(LocalTime.MIDNIGHT)) {
+            return dateTime.format(dateTimeFmt);
+        } else {
+            return dateTime.toLocalDate().format(dateTimeFmt);
+        }
     }
 
     @Override
-    public String getType() {
+    protected String getType() {
         return "D";
     }
 
     @Override
     public String toFileString() {
-        return super.toFileString() + " | " + dueDate;
+        return super.toFileString() + " | " + dateTimeToFileString(due);
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (by: " + dueDate + ")";
+        return super.toString() + " (by: " + dateTimeToString(due) + ")";
     }
 }

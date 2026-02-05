@@ -1,9 +1,12 @@
 import java.io.*;
 import java.nio.file.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Storage {
     private final Path filePath;
+
 
     public Storage(String filePath) {
         this.filePath = Paths.get(filePath);
@@ -17,18 +20,25 @@ public class Storage {
             String description = parts[2];
 
             Task task;
+            DateTimeFormatter dateTimeFileFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
+
             switch (type) {
                 case "T":
                     task = new Todo(description);
                     break;
                 case "D":
-                    String dueDate = parts[3];
-                    task = new Deadline(description, dueDate);
+                    String dueStr = parts[3];
+                    LocalDateTime due = LocalDateTime.parse(dueStr, dateTimeFileFmt);
+                    task = new Deadline(description, due);
                     break;
                 case "E":
-                    String startTime = parts[3];
-                    String endTime = parts[4];
-                    task = new Event(description, startTime, endTime);
+                    String startStr = parts[3];
+                    String endStr = parts[4];
+
+                    LocalDateTime start = LocalDateTime.parse(startStr, dateTimeFileFmt);
+                    LocalDateTime end = LocalDateTime.parse(endStr, dateTimeFileFmt);
+
+                    task = new Event(description, start, end);
                     break;
                 default:
                     return null;

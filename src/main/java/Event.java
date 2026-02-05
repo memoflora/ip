@@ -1,25 +1,47 @@
-public class Event extends Task {
-    private final String startTime;
-    private final String endTime;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
-    public Event(String description, String startTime, String endTime) {
+public class Event extends Task {
+    private final LocalDateTime start;
+    private final LocalDateTime end;
+
+    public Event(String description, LocalDateTime start, LocalDateTime end) {
         super(description);
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.start = start;
+        this.end = end;
+    }
+
+    private String dateTimeToFileString(LocalDateTime dateTime) {
+        DateTimeFormatter dateTimeFileFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
+        if (!start.toLocalTime().equals(LocalTime.MIDNIGHT) || !end.toLocalTime().equals(LocalTime.MIDNIGHT)) {
+            return dateTime.format(dateTimeFileFmt);
+        } else {
+            return dateTime.toLocalDate().format(dateTimeFileFmt);
+        }
+    }
+
+    private String dateTimeToString(LocalDateTime dateTime) {
+        DateTimeFormatter dateTimeFmt = DateTimeFormatter.ofPattern("d MMM yyyy[ 'at' HH:mm]");
+        if (!start.toLocalTime().equals(LocalTime.MIDNIGHT) || !end.toLocalTime().equals(LocalTime.MIDNIGHT)) {
+            return dateTime.format(dateTimeFmt);
+        } else {
+            return dateTime.toLocalDate().format(dateTimeFmt);
+        }
     }
 
     @Override
-    public String getType() {
+    protected String getType() {
         return "E";
     }
 
     @Override
     public String toFileString() {
-        return super.toFileString() + " | " + startTime + " | " + endTime;
+        return super.toFileString() + " | " + dateTimeToFileString(start) + " | " + dateTimeToFileString(end);
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (from: " + startTime + " to: " + endTime + ")";
+        return super.toString() + " (from: " + dateTimeToString(start) + " to: " + dateTimeToString(end) + ")";
     }
 }

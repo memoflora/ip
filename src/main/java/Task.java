@@ -7,6 +7,10 @@ public abstract class Task {
         this.isDone = false;
     }
 
+    public boolean getIsDone() {
+        return isDone;
+    }
+
     public void markAsDone() {
         isDone = true;
     }
@@ -15,14 +19,14 @@ public abstract class Task {
         isDone = false;
     }
 
-    public abstract String getType();
+    protected abstract String getType();
 
     public String toFileString() {
-        return getType() + " | " + (isDone ? "1" : "0") + " | " + description;
+        return getType() + " | " + (getIsDone() ? "1" : "0") + " | " + description;
     }
 
     @Override
     public String toString() {
-        return "[" + getType() + "][" + (isDone ? "X" : " ") + "] " + description;
+        return "[" + getType() + "][" + (getIsDone() ? "X" : " ") + "] " + description;
     }
 }

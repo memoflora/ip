@@ -4,7 +4,7 @@ public class Todo extends Task {
     }
 
     @Override
-    public String getType() {
+    protected String getType() {
         return "T";
     }
 
