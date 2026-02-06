@@ -9,21 +9,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Flora {
-    private static final String line = "    ____________________________________________________________";
-    private static final String indent = "     ";
-    private static final String greeting = indent + "Hi there! Flora here.\n" + indent + "Ask me anything!";
-    private static final String farewell = indent + "Talk to you later—bye!";
-
-    private final ArrayList<Task> tasks;
+    private final Ui ui;
     private final Storage storage;
+    private final ArrayList<Task> tasks;
 
     public Flora() {
+        ui = new Ui();
         storage = new Storage("./data/flora.txt");
         ArrayList<Task> loadedTasks;
 
         try {
             loadedTasks = storage.load();
         } catch (IOException e) {
+            ui.showLoadingError(e.getMessage());
             loadedTasks = new ArrayList<>();
         }
 
@@ -34,45 +32,33 @@ public class Flora {
         try {
             storage.save(tasks);
         } catch (IOException e) {
-            System.out.println(indent + "Error saving tasks: " + e.getMessage());
+            ui.showSavingError(e.getMessage());
         }
     }
 
     public void listTasks() {
-        System.out.println(indent + "Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(indent + (i + 1) + "." + tasks.get(i));
-        }
+        ui.showListTasks(tasks);
     }
 
     public void addTodo(String taskDesc) {
         Todo todo = new Todo(taskDesc);
         tasks.add(todo);
         saveTasks();
-
-        System.out.println(indent + "Got it. I've added this task:");
-        System.out.println(indent + "  " + todo);
-        System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
+        ui.showAddTodo(todo, tasks.size());
     }
 
     public void addDeadline(String taskDesc, LocalDateTime dueDate) {
         Deadline deadline = new Deadline(taskDesc, dueDate);
         tasks.add(deadline);
         saveTasks();
-
-        System.out.println(indent + "Got it. I've added this task:");
-        System.out.println(indent + "  " + deadline);
-        System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
+        ui.showAddDeadline(deadline, tasks.size());
     }
 
     public void addEvent(String taskDesc, LocalDateTime startTime, LocalDateTime endTime) {
         Event event = new Event(taskDesc, startTime, endTime);
         tasks.add(event);
         saveTasks();
-
-        System.out.println(indent + "Got it. I've added this task:");
-        System.out.println(indent + "  " + event);
-        System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
+        ui.showAddEvent(event, tasks.size());
     }
 
     public void deleteTask(int index) throws FloraException {
@@ -80,11 +66,9 @@ public class Flora {
             throw new FloraException("Bro's out of bounds");
         }
 
-        System.out.println(indent + "Noted. I've removed this task:");
-        System.out.println(indent + "  " + tasks.remove(index - 1));
+        Task task = tasks.remove(index - 1);
         saveTasks();
-
-        System.out.println(indent + "Now you have " + tasks.size() + " task" + (tasks.size() > 1 ? "s" : "") + " in the list.");
+        ui.showDeleteTask(task, tasks.size());
     }
 
     public void markTask(int index) throws FloraException {
@@ -99,9 +83,7 @@ public class Flora {
 
         task.markAsDone();
         saveTasks();
-
-        System.out.println(indent + "Nice! I've marked this task as done:");
-        System.out.println(indent + "  " + task);
+        ui.showMarkTask(task);
     }
 
     public void unmarkTask(int index) throws FloraException {
@@ -116,9 +98,7 @@ public class Flora {
 
         task.markAsNotDone();
         saveTasks();
-
-        System.out.println(indent + "OK, I've marked this task as not done yet:");
-        System.out.println(indent + "  " + task);
+        ui.showUnmarkTask(task);
     }
 
     public boolean parseInput(String input) throws FloraException, NumberFormatException {
@@ -269,43 +249,38 @@ public class Flora {
                 listTasks();
                 break;
             case "bye":
-                System.out.println(farewell);
-                System.out.println(line);
+                ui.showFarewell();
                 return false;
             default:
-                String[] strings = {"I guess bro", "Whatever that means"};
-                Random rand = new Random(System.currentTimeMillis());
-                int randomIndex = rand.nextInt(strings.length);
-                String exceptionMessage = strings[randomIndex];
-
-                throw new FloraException(exceptionMessage);
+                throw new FloraException(ui.getInvalidCmdErrorMsg());
         }
 
         return true;
     }
 
-    public static void main(String[] args) {
-        Flora flora = new Flora();
-
+    public void run() {
         Scanner sc = new Scanner(System.in);
         String input;
 
-        System.out.println(line);
-        System.out.println(greeting);
+        ui.showGreeting();
 
         boolean continueLoop = true;
         while (continueLoop) {
-            System.out.println(line);
-            System.out.println();
-
             input = sc.nextLine();
-            System.out.println(line);
+            ui.showLine();
 
             try {
-                continueLoop = flora.parseInput(input);
+                continueLoop = parseInput(input);
             } catch (FloraException | NumberFormatException e) {
-                System.out.println(indent + e.getMessage());
+                ui.showError(e.getMessage());
+            } finally {
+                ui.showLine();
+                ui.showNewLine();
             }
         }
+    }
+
+    public static void main(String[] args) {
+        new Flora().run();
     }
 }
