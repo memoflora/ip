@@ -1,8 +1,9 @@
 import java.io.*;
 import java.nio.file.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 public class Storage {
     private final Path filePath;
@@ -54,8 +55,8 @@ public class Storage {
         }
     }
 
-    public ArrayList<Task> load() throws IOException {
-        ArrayList<Task> tasks = new ArrayList<>();
+    public List<Task> load() throws IOException {
+        List<Task> tasks = new ArrayList<>();
         if (!Files.exists(filePath)) {
             return tasks;
         }
@@ -77,7 +78,7 @@ public class Storage {
         return tasks;
     }
 
-    public void save(ArrayList<Task> tasks) throws IOException {
+    public void save(TaskList tasks) throws IOException {
         if (filePath.getParent() != null) {
             Files.createDirectories(filePath.getParent());
         }

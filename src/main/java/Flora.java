@@ -1,31 +1,28 @@
-import java.io.IOException;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-import java.util.Random;
+import java.util.List;
 import java.util.ArrayList;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Flora {
     private final Ui ui;
     private final Storage storage;
-    private final ArrayList<Task> tasks;
+    private TaskList tasks;
 
     public Flora() {
         ui = new Ui();
         storage = new Storage("./data/flora.txt");
-        ArrayList<Task> loadedTasks;
 
         try {
-            loadedTasks = storage.load();
+            tasks = new TaskList(storage.load());
         } catch (IOException e) {
             ui.showLoadingError(e.getMessage());
-            loadedTasks = new ArrayList<>();
+            tasks = new TaskList();
         }
-
-        this.tasks = loadedTasks;
     }
 
     public void saveTasks() {
@@ -66,7 +63,7 @@ public class Flora {
             throw new FloraException("Bro's out of bounds");
         }
 
-        Task task = tasks.remove(index - 1);
+        Task task = tasks.remove(index);
         saveTasks();
         ui.showDeleteTask(task, tasks.size());
     }
@@ -76,7 +73,7 @@ public class Flora {
             throw new FloraException("Bro's out of bounds");
         }
 
-        Task task = tasks.get(index - 1);
+        Task task = tasks.get(index);
         if (task.getIsDone()) {
             throw new FloraException("Please stop");
         }
@@ -91,7 +88,7 @@ public class Flora {
             throw new FloraException("Bro's out of bounds");
         }
 
-        Task task = tasks.get(index - 1);
+        Task task = tasks.get(index);
         if (!task.getIsDone()) {
             throw new FloraException("Please stop");
         }

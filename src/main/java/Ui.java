@@ -38,10 +38,10 @@ public class Ui {
         System.out.println(indent + "Failed saving to storage: " + errorMsg);
     }
 
-    public void showListTasks(List<Task> tasks) {
+    public void showListTasks(TaskList tasks) {
         System.out.println(indent + "Here are the tasks in your list: ");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(indent + (i + 1) + "." + tasks.get(i));
+        for (int i = 1; i <= tasks.size(); i++) {
+            System.out.println(indent + i + "." + tasks.get(i));
         }
     }
 
