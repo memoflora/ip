@@ -11,11 +11,11 @@ public abstract class Task {
         return isDone;
     }
 
-    public void markAsDone() {
+    public void mark() {
         isDone = true;
     }
 
-    public void markAsNotDone() {
+    public void unmark() {
         isDone = false;
     }
 
