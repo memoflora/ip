@@ -12,7 +12,7 @@ public class Event extends Task {
         this.end = end;
     }
 
-    private String dateTimeToFileString(LocalDateTime dateTime) {
+    private String convertDateTimeToFileString(LocalDateTime dateTime) {
         DateTimeFormatter dateTimeFileFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
         if (!start.toLocalTime().equals(LocalTime.MIDNIGHT) || !end.toLocalTime().equals(LocalTime.MIDNIGHT)) {
             return dateTime.format(dateTimeFileFmt);
@@ -21,7 +21,7 @@ public class Event extends Task {
         }
     }
 
-    private String dateTimeToString(LocalDateTime dateTime) {
+    private String convertDateTimeToString(LocalDateTime dateTime) {
         DateTimeFormatter dateTimeFmt = DateTimeFormatter.ofPattern("d MMM yyyy[ 'at' HH:mm]");
         if (!start.toLocalTime().equals(LocalTime.MIDNIGHT) || !end.toLocalTime().equals(LocalTime.MIDNIGHT)) {
             return dateTime.format(dateTimeFmt);
@@ -37,11 +37,11 @@ public class Event extends Task {
 
     @Override
     public String toFileString() {
-        return super.toFileString() + " | " + dateTimeToFileString(start) + " | " + dateTimeToFileString(end);
+        return super.toFileString() + " | " + convertDateTimeToFileString(start) + " | " + convertDateTimeToFileString(end);
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (from: " + dateTimeToString(start) + " to: " + dateTimeToString(end) + ")";
+        return super.toString() + " (from: " + convertDateTimeToString(start) + " to: " + convertDateTimeToString(end) + ")";
     }
 }

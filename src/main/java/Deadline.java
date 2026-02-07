@@ -10,7 +10,7 @@ public class Deadline extends Task {
         this.due = due;
     }
 
-    private String dateTimeToFileString(LocalDateTime dateTime) {
+    private String convertDateTimeToFileString(LocalDateTime dateTime) {
         DateTimeFormatter dateTimeFileFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
         if (!dateTime.toLocalTime().equals(LocalTime.MIDNIGHT)) {
             return dateTime.format(dateTimeFileFmt);
@@ -19,7 +19,7 @@ public class Deadline extends Task {
         }
     }
 
-    private String dateTimeToString(LocalDateTime dateTime) {
+    private String convertDateTimeToString(LocalDateTime dateTime) {
         DateTimeFormatter dateTimeFmt = DateTimeFormatter.ofPattern("d MMM yyyy[ 'at' HH:mm]");
         if (!dateTime.toLocalTime().equals(LocalTime.MIDNIGHT)) {
             return dateTime.format(dateTimeFmt);
@@ -35,11 +35,11 @@ public class Deadline extends Task {
 
     @Override
     public String toFileString() {
-        return super.toFileString() + " | " + dateTimeToFileString(due);
+        return super.toFileString() + " | " + convertDateTimeToFileString(due);
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (by: " + dateTimeToString(due) + ")";
+        return super.toString() + " (by: " + convertDateTimeToString(due) + ")";
     }
 }
