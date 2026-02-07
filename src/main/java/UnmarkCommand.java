@@ -12,7 +12,7 @@ public class UnmarkCommand extends Command {
         }
 
         Task task = tasks.get(taskIndex);
-        if (!task.getIsDone()) {
+        if (!task.isDone()) {
             ui.showAlreadyUnmarked();
             return;
         }

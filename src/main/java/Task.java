@@ -1,32 +1,32 @@
 public abstract class Task {
     protected String description;
-    protected boolean isDone;
+    protected boolean done;
 
     public Task(String description) {
         this.description = description;
-        this.isDone = false;
+        this.done = false;
     }
 
-    public boolean getIsDone() {
-        return isDone;
+    public boolean isDone() {
+        return done;
     }
 
     public void mark() {
-        isDone = true;
+        done = true;
     }
 
     public void unmark() {
-        isDone = false;
+        done = false;
     }
 
     protected abstract String getType();
 
     public String toFileString() {
-        return getType() + " | " + (getIsDone() ? "1" : "0") + " | " + description;
+        return getType() + " | " + (isDone() ? "1" : "0") + " | " + description;
     }
 
     @Override
     public String toString() {
-        return "[" + getType() + "][" + (getIsDone() ? "X" : " ") + "] " + description;
+        return "[" + getType() + "][" + (isDone() ? "X" : " ") + "] " + description;
     }
 }
