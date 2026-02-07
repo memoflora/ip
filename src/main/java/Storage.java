@@ -26,23 +26,23 @@ public class Storage {
         Task task;
 
         switch (type) {
-            case "T":
-                task = new Todo(description);
-                break;
-            case "D":
-                String dueStr = parts[3];
-                LocalDateTime due = LocalDateTime.parse(dueStr, dateTimeFileFmt);
-                task = new Deadline(description, due);
-                break;
-            case "E":
-                String startStr = parts[3];
-                String endStr = parts[4];
-                LocalDateTime start = LocalDateTime.parse(startStr, dateTimeFileFmt);
-                LocalDateTime end = LocalDateTime.parse(endStr, dateTimeFileFmt);
-                task = new Event(description, start, end);
-                break;
-            default:
-                throw new FloraException("Invalid task type: " + type);
+        case "T":
+            task = new Todo(description);
+            break;
+        case "D":
+            String dueStr = parts[3];
+            LocalDateTime due = LocalDateTime.parse(dueStr, dateTimeFileFmt);
+            task = new Deadline(description, due);
+            break;
+        case "E":
+            String startStr = parts[3];
+            String endStr = parts[4];
+            LocalDateTime start = LocalDateTime.parse(startStr, dateTimeFileFmt);
+            LocalDateTime end = LocalDateTime.parse(endStr, dateTimeFileFmt);
+            task = new Event(description, start, end);
+            break;
+        default:
+            throw new FloraException("Invalid task type: " + type);
         }
 
         if (isDone) {

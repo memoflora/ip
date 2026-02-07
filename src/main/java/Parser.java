@@ -17,118 +17,118 @@ public class Parser {
         }
 
         switch (command.toLowerCase()) {
-            case "todo": {
-                if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-                    throw new FloraException("At least put something bro");
-                }
-
-                String taskDesc = input.substring(firstSpaceIndex + 1);
-
-                return new AddTodoCommand(taskDesc);
+        case "todo": {
+            if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+                throw new FloraException("At least put something bro");
             }
 
-            case "deadline" : {
-                if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-                    throw new FloraException("At least put something bro");
-                }
+            String taskDesc = input.substring(firstSpaceIndex + 1);
 
-                int byIndex = input.indexOf("/by");
-                if (byIndex == -1 || byIndex + 4 >= input.length()) {
-                    throw new FloraException("At least set a due date bro");
-                }
+            return new AddTodoCommand(taskDesc);
+        }
 
-                String taskDesc = input.substring(firstSpaceIndex + 1, byIndex - 1);
-                String taskDueStr = input.substring(byIndex + 4);
-
-                LocalDateTime taskDue;
-
-                switch (taskDueStr.toLowerCase()) {
-                    case "today", "tonight":
-                        taskDue = LocalDate.now().atTime(LocalTime.MAX);
-                        break;
-                    case "tomorrow":
-                        taskDue = LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
-                        break;
-                    case "next week":
-                        taskDue = LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
-                        break;
-                    case "next month":
-                        taskDue = LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
-                        break;
-                    default:
-                        try {
-                            taskDue = LocalDateTime.parse(taskDueStr, dateTimeFmt);
-                        } catch (DateTimeParseException e) {
-                            throw new FloraException("Invalid due date/time: " + taskDueStr);
-                        }
-
-                        break;
-                }
-
-                return new AddDeadlineCommand(taskDesc, taskDue);
+        case "deadline" : {
+            if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+                throw new FloraException("At least put something bro");
             }
 
-            case "event" : {
-                if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-                    throw new FloraException("At least put something bro");
-                }
-
-                int fromIndex = input.indexOf("/from");
-                if (fromIndex == -1 || fromIndex + 6 >= input.length()) {
-                    throw new FloraException("At least set a start time bro");
-                }
-
-                int toIndex = input.indexOf("/to");
-                if (toIndex == -1 || toIndex + 4 >= input.length()) {
-                    throw new FloraException("At least set an end time bro");
-                }
-
-                String taskDesc = input.substring(firstSpaceIndex + 1, fromIndex - 1);
-                String taskStartStr = input.substring(fromIndex + 6, toIndex - 1);
-                String taskEndStr = input.substring(toIndex + 4);
-
-                LocalDateTime taskStart;
-                LocalDateTime taskEnd;
-
-                try {
-                    taskStart = LocalDateTime.parse(taskStartStr, dateTimeFmt);
-                } catch (DateTimeParseException e) {
-                    throw new FloraException("Invalid start date/time: " + taskStartStr);
-                }
-
-                try {
-                    taskEnd = LocalDateTime.parse(taskEndStr, dateTimeFmt);
-                } catch (DateTimeParseException e) {
-                    throw new FloraException("Invalid end date/time: " + taskEndStr);
-                }
-
-                return new AddEventCommand(taskDesc, taskStart, taskEnd);
+            int byIndex = input.indexOf("/by");
+            if (byIndex == -1 || byIndex + 4 >= input.length()) {
+                throw new FloraException("At least set a due date bro");
             }
 
-            case "delete": {
-                int taskIndex = getTaskIndex(input, firstSpaceIndex);
-                return new DeleteCommand(taskIndex);
-            }
+            String taskDesc = input.substring(firstSpaceIndex + 1, byIndex - 1);
+            String taskDueStr = input.substring(byIndex + 4);
 
-            case "mark": {
-                int taskIndex = getTaskIndex(input, firstSpaceIndex);
-                return new MarkCommand(taskIndex);
-            }
+            LocalDateTime taskDue;
 
-            case "unmark": {
-                int taskIndex = getTaskIndex(input, firstSpaceIndex);
-                return new UnmarkCommand(taskIndex);
-            }
-
-            case "list":
-                return new ListCommand();
-            case "bye":
-                return new ExitCommand();
+            switch (taskDueStr.toLowerCase()) {
+            case "today", "tonight":
+                taskDue = LocalDate.now().atTime(LocalTime.MAX);
+                break;
+            case "tomorrow":
+                taskDue = LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
+                break;
+            case "next week":
+                taskDue = LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
+                break;
+            case "next month":
+                taskDue = LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
+                break;
             default:
-                String[] strings = {"I guess bro", "Whatever that means"};
-                Random rand = new Random(System.currentTimeMillis());
-                int randomIndex = rand.nextInt(strings.length);
-                throw new FloraException(strings[randomIndex]);
+                try {
+                    taskDue = LocalDateTime.parse(taskDueStr, dateTimeFmt);
+                } catch (DateTimeParseException e) {
+                    throw new FloraException("Invalid due date/time: " + taskDueStr);
+                }
+
+                break;
+            }
+
+            return new AddDeadlineCommand(taskDesc, taskDue);
+        }
+
+        case "event" : {
+            if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+                throw new FloraException("At least put something bro");
+            }
+
+            int fromIndex = input.indexOf("/from");
+            if (fromIndex == -1 || fromIndex + 6 >= input.length()) {
+                throw new FloraException("At least set a start time bro");
+            }
+
+            int toIndex = input.indexOf("/to");
+            if (toIndex == -1 || toIndex + 4 >= input.length()) {
+                throw new FloraException("At least set an end time bro");
+            }
+
+            String taskDesc = input.substring(firstSpaceIndex + 1, fromIndex - 1);
+            String taskStartStr = input.substring(fromIndex + 6, toIndex - 1);
+            String taskEndStr = input.substring(toIndex + 4);
+
+            LocalDateTime taskStart;
+            LocalDateTime taskEnd;
+
+            try {
+                taskStart = LocalDateTime.parse(taskStartStr, dateTimeFmt);
+            } catch (DateTimeParseException e) {
+                throw new FloraException("Invalid start date/time: " + taskStartStr);
+            }
+
+            try {
+                taskEnd = LocalDateTime.parse(taskEndStr, dateTimeFmt);
+            } catch (DateTimeParseException e) {
+                throw new FloraException("Invalid end date/time: " + taskEndStr);
+            }
+
+            return new AddEventCommand(taskDesc, taskStart, taskEnd);
+        }
+
+        case "delete": {
+            int taskIndex = getTaskIndex(input, firstSpaceIndex);
+            return new DeleteCommand(taskIndex);
+        }
+
+        case "mark": {
+            int taskIndex = getTaskIndex(input, firstSpaceIndex);
+            return new MarkCommand(taskIndex);
+        }
+
+        case "unmark": {
+            int taskIndex = getTaskIndex(input, firstSpaceIndex);
+            return new UnmarkCommand(taskIndex);
+        }
+
+        case "list":
+            return new ListCommand();
+        case "bye":
+            return new ExitCommand();
+        default:
+            String[] strings = {"I guess bro", "Whatever that means"};
+            Random rand = new Random(System.currentTimeMillis());
+            int randomIndex = rand.nextInt(strings.length);
+            throw new FloraException(strings[randomIndex]);
         }
     }
 
