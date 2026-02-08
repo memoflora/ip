@@ -10,6 +10,6 @@ public class AddTodoCommand extends Command {
         Todo todo = new Todo(taskDesc);
         tasks.add(todo);
         storage.save(tasks);
-        ui.showAddTask(todo, tasks.size());
+        ui.showAddedTask(todo, tasks.size());
     }
 }

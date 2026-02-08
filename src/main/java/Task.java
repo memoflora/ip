@@ -7,6 +7,10 @@ public abstract class Task {
         this.done = false;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public boolean isDone() {
         return done;
     }

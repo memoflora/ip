@@ -19,6 +19,6 @@ public class UnmarkCommand extends Command {
 
         task.unmark();
         storage.save(tasks);
-        ui.showUnmarkTask(task);
+        ui.showUnmarkedTask(task);
     }
 }

@@ -23,7 +23,6 @@ public class Parser {
             }
 
             String taskDesc = input.substring(firstSpaceIndex + 1);
-
             return new AddTodoCommand(taskDesc);
         }
 
@@ -103,6 +102,15 @@ public class Parser {
             }
 
             return new AddEventCommand(taskDesc, taskStart, taskEnd);
+        }
+
+        case "find": {
+            if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+                throw new FloraException("Put a keyword.");
+            }
+
+            String keyword = input.substring(firstSpaceIndex + 1);
+            return new FindCommand(keyword);
         }
 
         case "delete": {

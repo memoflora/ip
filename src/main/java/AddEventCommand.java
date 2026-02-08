@@ -16,6 +16,6 @@ public class AddEventCommand extends Command {
         Event event = new Event(taskDesc, taskStart, taskEnd);
         tasks.add(event);
         storage.save(tasks);
-        ui.showAddTask(event, tasks.size());
+        ui.showAddedTask(event, tasks.size());
     }
 }

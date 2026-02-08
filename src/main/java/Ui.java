@@ -40,7 +40,7 @@ public class Ui {
         indent(errorMsg);
     }
 
-    public void showListTask(TaskList tasks) {
+    public void showTaskList(TaskList tasks) {
         if (tasks.size() == 0) {
             indent("Your list is empty.");
             return;
@@ -52,24 +52,36 @@ public class Ui {
         }
     }
 
-    public void showAddTask(Task task, int tasksSize) {
+    public void showMatchingTasks(TaskList matchingTasks) {
+        if (matchingTasks.size() == 0) {
+            indent("No matching tasks.");
+            return;
+        }
+
+        indent("Here are the matching tasks in your list: ");
+        for (int i = 1; i <= matchingTasks.size(); i++) {
+            indent(i + "." + matchingTasks.get(i));
+        }
+    }
+
+    public void showAddedTask(Task task, int tasksSize) {
         indent("Got it. I've added this task:");
         indent("  " + task);
         indent("Now you have " + tasksSize + " task" + (tasksSize > 1 ? "s" : "") + " in the list.");
     }
 
-    public void showDeleteTask(Task task, int tasksSize) {
+    public void showDeletedTask(Task task, int tasksSize) {
         indent("Noted. I've removed this task:");
         indent("  " + task);
         indent("Now you have " + tasksSize + " task" + (tasksSize > 1 ? "s" : "") + " in the list.");
     }
 
-    public void showMarkTask(Task task) {
+    public void showMarkedTask(Task task) {
         indent("Nice! I've marked this task as done:");
         indent("  " + task);
     }
 
-    public void showUnmarkTask(Task task) {
+    public void showUnmarkedTask(Task task) {
         indent("Ok, I've marked this task as not done yet:");
         indent("  " + task);
     }

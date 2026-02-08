@@ -13,6 +13,6 @@ public class DeleteCommand extends Command {
 
         Task task = tasks.remove(taskIndex);
         storage.save(tasks);
-        ui.showDeleteTask(task, tasks.size());
+        ui.showDeletedTask(task, tasks.size());
     }
 }

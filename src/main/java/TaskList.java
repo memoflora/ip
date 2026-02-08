@@ -25,6 +25,20 @@ public class TaskList implements Iterable<Task> {
         return tasks.get(index - 1);
     }
 
+    public TaskList find(String keyword) {
+        TaskList matches = new TaskList();
+        for (Task task : tasks) {
+            String taskDesc = task.getDescription().toLowerCase();
+            keyword = keyword.toLowerCase();
+
+            if (taskDesc.contains(keyword)) {
+                matches.add(task);
+            }
+        }
+
+        return matches;
+    }
+
     public int size() {
         return tasks.size();
     }

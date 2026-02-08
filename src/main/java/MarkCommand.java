@@ -19,6 +19,6 @@ public class MarkCommand extends Command {
 
         task.mark();
         storage.save(tasks);
-        ui.showMarkTask(task);
+        ui.showMarkedTask(task);
     }
 }
