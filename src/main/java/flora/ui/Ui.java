@@ -1,4 +1,9 @@
+package flora.ui;
+
 import java.util.Scanner;
+
+import flora.task.Task;
+import flora.task.TaskList;
 
 public class Ui {
     private static final String indentStr = "     ";

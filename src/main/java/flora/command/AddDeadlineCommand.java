@@ -1,4 +1,12 @@
+package flora.command;
+
 import java.time.LocalDateTime;
+
+import flora.ui.Ui;
+import flora.storage.Storage;
+import flora.task.Deadline;
+import flora.task.TaskList;
+import flora.exception.FloraException;
 
 public class AddDeadlineCommand extends Command {
     private final String taskDesc;

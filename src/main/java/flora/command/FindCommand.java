@@ -1,3 +1,9 @@
+package flora.command;
+
+import flora.ui.Ui;
+import flora.storage.Storage;
+import flora.task.TaskList;
+
 public class FindCommand extends Command {
     private final String keyword;
 
