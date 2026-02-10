@@ -6,23 +6,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import flora.command.AddDeadlineCommand;
-import flora.command.AddEventCommand;
-import flora.command.AddTodoCommand;
-import flora.command.Command;
-import flora.command.DeleteCommand;
-import flora.command.ExitCommand;
-import flora.command.FindCommand;
-import flora.command.ListCommand;
-import flora.command.MarkCommand;
-import flora.command.UnmarkCommand;
-import flora.exception.FloraException;
-import flora.parser.Parser;
-import flora.storage.Storage;
-import flora.task.Deadline;
-import flora.task.Event;
-import flora.task.TaskList;
-import flora.task.Todo;
+import flora.command.*;
+import flora.exception.*;
+import flora.parser.*;
+import flora.storage.*;
+import flora.task.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
