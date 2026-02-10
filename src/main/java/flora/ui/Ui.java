@@ -5,6 +5,9 @@ import java.util.Scanner;
 import flora.task.Task;
 import flora.task.TaskList;
 
+/**
+ * Handles all user interface interactions, including reading input and displaying output.
+ */
 public class Ui {
     private static final String indentStr = "     ";
     private static final String line = "____________________________________________________________";
@@ -12,6 +15,11 @@ public class Ui {
     private static final String farewell = "Talk to you later—bye!";
     private final Scanner sc = new Scanner(System.in);
 
+    /**
+     * Reads a line of input from the user.
+     *
+     * @return The user's input as a string.
+     */
     public String readCommand() {
         return sc.nextLine();
     }
@@ -20,14 +28,23 @@ public class Ui {
         System.out.println(indentStr + str);
     }
 
+    /**
+     * Displays a horizontal divider line.
+     */
     public void showLine() {
         System.out.println(indentStr.substring(0, indentStr.length() - 1) + line);
     }
 
+    /**
+     * Displays a blank line.
+     */
     public void showNewLine() {
         System.out.println();
     }
 
+    /**
+     * Displays the greeting message when the application starts.
+     */
     public void showGreeting() {
         showLine();
         for (String greeting : greetings) {
@@ -37,14 +54,27 @@ public class Ui {
         showNewLine();
     }
 
+    /**
+     * Displays the farewell message when the application exits.
+     */
     public void showFarewell() {
         indent(farewell);
     }
 
+    /**
+     * Displays an error message.
+     *
+     * @param errorMsg The error message to display.
+     */
     public void showError(String errorMsg) {
         indent(errorMsg);
     }
 
+    /**
+     * Displays all tasks in the given task list.
+     *
+     * @param tasks The task list to display.
+     */
     public void showTaskList(TaskList tasks) {
         if (tasks.size() == 0) {
             indent("Your list is empty.");
@@ -57,6 +87,11 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays all tasks that match a search query.
+     *
+     * @param matchingTasks The task list containing matching tasks.
+     */
     public void showMatchingTasks(TaskList matchingTasks) {
         if (matchingTasks.size() == 0) {
             indent("No matching tasks.");
@@ -69,32 +104,60 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays a confirmation message after a task is added.
+     *
+     * @param task      The task that was added.
+     * @param tasksSize The total number of tasks after adding.
+     */
     public void showAddedTask(Task task, int tasksSize) {
         indent("Got it. I've added this task:");
         indent("  " + task);
         indent("Now you have " + tasksSize + " task" + (tasksSize > 1 ? "s" : "") + " in the list.");
     }
 
+    /**
+     * Displays a confirmation message after a task is deleted.
+     *
+     * @param task      The task that was deleted.
+     * @param tasksSize The total number of tasks after deleting.
+     */
     public void showDeletedTask(Task task, int tasksSize) {
         indent("Noted. I've removed this task:");
         indent("  " + task);
         indent("Now you have " + tasksSize + " task" + (tasksSize > 1 ? "s" : "") + " in the list.");
     }
 
+    /**
+     * Displays a confirmation message after a task is marked as done.
+     *
+     * @param task The task that was marked.
+     */
     public void showMarkedTask(Task task) {
         indent("Nice! I've marked this task as done:");
         indent("  " + task);
     }
 
+    /**
+     * Displays a confirmation message after a task is marked as not done.
+     *
+     * @param task The task that was unmarked.
+     */
     public void showUnmarkedTask(Task task) {
         indent("Ok, I've marked this task as not done yet:");
         indent("  " + task);
     }
 
+    /**
+     * Displays a message indicating the task is already marked as done.
+     */
     public void showAlreadyMarked() {
         indent("That task is already marked bro");
     }
 
+    /**
+     * Displays a message indicating the task is already marked as not done.
+     */
     public void showAlreadyUnmarked() {
         indent("That task is already unmarked bro");
     }

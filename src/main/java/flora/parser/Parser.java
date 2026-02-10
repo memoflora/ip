@@ -10,9 +10,19 @@ import java.util.Random;
 import flora.command.*;
 import flora.exception.FloraException;
 
+/**
+ * Parses user input into executable commands.
+ */
 public class Parser {
     private static final DateTimeFormatter dateTimeFmt = DateTimeFormatter.ofPattern("d/M/yyyy[ H:mm]");
 
+    /**
+     * Parses the given user input string and returns the corresponding command.
+     *
+     * @param input The raw user input string.
+     * @return The command corresponding to the user input.
+     * @throws FloraException If the input is invalid or cannot be parsed.
+     */
     public static Command parse(String input) throws FloraException {
         String command = input;
         int firstSpaceIndex = input.indexOf(" ");
@@ -145,6 +155,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Extracts and validates the task index from the user input.
+     *
+     * @param input           The raw user input string.
+     * @param firstSpaceIndex The index of the first space in the input.
+     * @return The parsed task index.
+     * @throws FloraException If the index is missing or not a valid integer.
+     */
     private static int getTaskIndex(String input, int firstSpaceIndex) throws FloraException {
         if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
             throw new FloraException("At least put an index bro");

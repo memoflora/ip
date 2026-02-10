@@ -28,7 +28,7 @@ test {
 }
 
 application {
-    mainClass.set("flora.FloraTest")
+    mainClass.set("flora.Flora")
 }
 
 shadowJar {

@@ -6,13 +6,24 @@ import flora.task.Todo;
 import flora.task.TaskList;
 import flora.exception.FloraException;
 
+/**
+ * Command to add a new todo task to the task list.
+ */
 public class AddTodoCommand extends Command {
     private final String taskDesc;
 
+    /**
+     * Constructs an AddTodoCommand with the given description.
+     *
+     * @param taskDesc Description of the todo task.
+     */
     public AddTodoCommand(String taskDesc) {
         this.taskDesc = taskDesc;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws FloraException {
         Todo todo = new Todo(taskDesc);

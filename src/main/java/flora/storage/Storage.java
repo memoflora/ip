@@ -14,14 +14,29 @@ import java.time.format.DateTimeFormatter;
 import flora.task.*;
 import flora.exception.FloraException;
 
+/**
+ * Handles loading and saving tasks to a file on disk.
+ */
 public class Storage {
     private final Path filePath;
     private static final DateTimeFormatter dateTimeFileFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
 
+    /**
+     * Constructs a Storage instance with the specified file path.
+     *
+     * @param filePath Path to the file used for persisting tasks.
+     */
     public Storage(String filePath) {
         this.filePath = Paths.get(filePath);
     }
 
+    /**
+     * Parses a single line from the storage file into a Task object.
+     *
+     * @param line A pipe-delimited line from the storage file.
+     * @return The parsed Task.
+     * @throws FloraException If the line contains an invalid task type.
+     */
     public static Task parseTask(String line) throws FloraException {
         String[] parts = line.split(" \\| ");
         String type = parts[0];
@@ -57,6 +72,12 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Loads all tasks from the storage file.
+     *
+     * @return A list of tasks read from the file.
+     * @throws FloraException If the file cannot be read or contains corrupted data.
+     */
     public List<Task> load() throws FloraException {
         List<Task> tasks = new ArrayList<>();
 
@@ -79,6 +100,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves all tasks in the given task list to the storage file.
+     *
+     * @param tasks The task list to save.
+     * @throws FloraException If the file cannot be written to.
+     */
     public void save(TaskList tasks) throws FloraException {
         try {
             Files.createDirectories(filePath.getParent());

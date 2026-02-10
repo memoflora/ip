@@ -7,11 +7,20 @@ import flora.parser.Parser;
 import flora.command.Command;
 import flora.exception.FloraException;
 
+/**
+ * Main class for the Flora chatbot application.
+ * Manages the interaction between the UI, storage, and task list.
+ */
 public class Flora {
     private final Ui ui;
     private final Storage storage;
     private TaskList tasks;
 
+    /**
+     * Constructs a Flora instance with the specified file path for storage.
+     *
+     * @param filePath Path to the file used for persisting tasks.
+     */
     public Flora(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -24,6 +33,10 @@ public class Flora {
         }
     }
 
+    /**
+     * Runs the main loop of the chatbot, reading and executing user commands
+     * until the exit command is issued.
+     */
     public void run() {
         ui.showGreeting();
         boolean isExit = false;
@@ -43,6 +56,11 @@ public class Flora {
         }
     }
 
+    /**
+     * Entry point of the Flora application.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         new Flora("data/tasks.txt").run();
     }
