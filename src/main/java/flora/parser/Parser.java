@@ -40,115 +40,134 @@ public class Parser {
             command = input.substring(0, firstSpaceIndex);
         }
 
-        switch (command.toLowerCase()) {
-        case "todo": {
-            String taskDesc = getArguments(input, firstSpaceIndex, "At least put something bro");
-            return new AddTodoCommand(taskDesc);
-        }
-
-        case "deadline": {
-            getArguments(input, firstSpaceIndex, "At least put something bro");
-
-            int byIndex = input.indexOf("/by");
-            if (byIndex == -1 || byIndex + 4 >= input.length()) {
-                throw new FloraException("At least set a due date bro");
-            }
-
-            String taskDesc = input.substring(firstSpaceIndex + 1, byIndex - 1);
-            String taskDueStr = input.substring(byIndex + 4);
-
-            LocalDateTime taskDue;
-
-            switch (taskDueStr.toLowerCase()) {
-            case "today", "tonight":
-                taskDue = LocalDate.now().atTime(LocalTime.MAX);
-                break;
-            case "tomorrow":
-                taskDue = LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
-                break;
-            case "next week":
-                taskDue = LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
-                break;
-            case "next month":
-                taskDue = LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
-                break;
-            default:
-                taskDue = parseDateTime(taskDueStr, "due date/time");
-                break;
-            }
-
-            return new AddDeadlineCommand(taskDesc, taskDue);
-        }
-
-        case "event": {
-            getArguments(input, firstSpaceIndex, "At least put something bro");
-
-            int fromIndex = input.indexOf("/from");
-            if (fromIndex == -1 || fromIndex + 6 >= input.length()) {
-                throw new FloraException("At least set a start time bro");
-            }
-
-            int toIndex = input.indexOf("/to");
-            if (toIndex == -1 || toIndex + 4 >= input.length()) {
-                throw new FloraException("At least set an end time bro");
-            }
-
-            String taskDesc = input.substring(firstSpaceIndex + 1, fromIndex - 1);
-            String taskStartStr = input.substring(fromIndex + 6, toIndex - 1);
-            String taskEndStr = input.substring(toIndex + 4);
-
-            LocalDateTime taskStart = parseDateTime(taskStartStr, "start date/time");
-            LocalDateTime taskEnd = parseDateTime(taskEndStr, "end date/time");
-
-            return new AddEventCommand(taskDesc, taskStart, taskEnd);
-        }
-
-        case "find": {
-            String keyword = getArguments(input, firstSpaceIndex, "Put a keyword.");
-            return new FindCommand(keyword);
-        }
-
-        case "delete": {
-            int taskIndex = getTaskIndex(input, firstSpaceIndex);
-            return new DeleteCommand(taskIndex);
-        }
-
-        case "mark": {
-            int taskIndex = getTaskIndex(input, firstSpaceIndex);
-            return new MarkCommand(taskIndex);
-        }
-
-        case "unmark": {
-            int taskIndex = getTaskIndex(input, firstSpaceIndex);
-            return new UnmarkCommand(taskIndex);
-        }
-
-        case "list":
-            return new ListCommand();
-        case "bye":
-            return new ExitCommand();
-        default:
-            String[] strings = {"I guess bro", "Whatever that means"};
-            Random rand = new Random(System.currentTimeMillis());
-            int randomIndex = rand.nextInt(strings.length);
-            throw new FloraException(strings[randomIndex]);
-        }
+        return switch (command.toLowerCase()) {
+            case "todo" -> parseTodo(input, firstSpaceIndex);
+            case "deadline" -> parseDeadline(input, firstSpaceIndex);
+            case "event" -> parseEvent(input, firstSpaceIndex);
+            case "find" -> parseFind(input, firstSpaceIndex);
+            case "delete" -> new DeleteCommand(getTaskIndex(input, firstSpaceIndex));
+            case "mark" -> new MarkCommand(getTaskIndex(input, firstSpaceIndex));
+            case "unmark" -> new UnmarkCommand(getTaskIndex(input, firstSpaceIndex));
+            case "list" -> new ListCommand();
+            case "bye" -> new ExitCommand();
+            default -> throw new FloraException(getInvalidCommandMessage());
+        };
     }
 
     /**
-     * Validates that the input has arguments after the command and returns them.
+     * Parses a todo command from the user input.
      *
      * @param input           The raw user input string.
      * @param firstSpaceIndex The index of the first space in the input.
-     * @param errorMsg        The error message to throw if arguments are missing.
-     * @return The arguments substring after the command.
-     * @throws FloraException If no arguments are provided.
+     * @return The parsed {@code AddTodoCommand}.
+     * @throws FloraException If the task description is missing.
      */
-    private static String getArguments(String input, int firstSpaceIndex, String errorMsg) throws FloraException {
+    private static Command parseTodo(String input, int firstSpaceIndex) throws FloraException {
         if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-            throw new FloraException(errorMsg);
+            throw new FloraException("At least put something bro");
         }
-        return input.substring(firstSpaceIndex + 1);
+
+        String taskDesc = input.substring(firstSpaceIndex + 1);
+        return new AddTodoCommand(taskDesc);
+    }
+
+    /**
+     * Parses a deadline command from the user input.
+     * Extracts the task description and due date/time, supporting
+     * natural language shortcuts (e.g., "today", "tomorrow", "next week")
+     * as well as explicit date/time strings.
+     *
+     * @param input           The raw user input string.
+     * @param firstSpaceIndex The index of the first space in the input.
+     * @return The parsed {@code AddDeadlineCommand}.
+     * @throws FloraException If the description or due date is missing or invalid.
+     */
+    private static Command parseDeadline(String input, int firstSpaceIndex) throws FloraException {
+        if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+            throw new FloraException("At least put something bro");
+        }
+
+        int byIndex = input.indexOf("/by");
+        if (byIndex == -1 || byIndex + 4 >= input.length()) {
+            throw new FloraException("At least set a due date bro");
+        }
+
+        String taskDesc = input.substring(firstSpaceIndex + 1, byIndex - 1);
+        String taskDueStr = input.substring(byIndex + 4);
+
+        LocalDateTime taskDue = switch (taskDueStr.toLowerCase()) {
+            case "today", "tonight" -> LocalDate.now().atTime(LocalTime.MAX);
+            case "tomorrow" -> LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
+            case "next week" -> LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
+            case "next month" -> LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
+            default -> parseDateTime(taskDueStr, "due date/time");
+        };
+
+        return new AddDeadlineCommand(taskDesc, taskDue);
+    }
+
+    /**
+     * Parses an event command from the user input.
+     * Extracts the task description, start date/time, and end date/time
+     * by locating the {@code /from} and {@code /to} delimiters.
+     *
+     * @param input           The raw user input string.
+     * @param firstSpaceIndex The index of the first space in the input.
+     * @return The parsed {@code AddEventCommand}.
+     * @throws FloraException If the description, start time, or end time is missing or invalid.
+     */
+    private static Command parseEvent(String input, int firstSpaceIndex) throws FloraException {
+        if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+            throw new FloraException("At least put something bro");
+        }
+
+        int fromIndex = input.indexOf("/from");
+        if (fromIndex == -1 || fromIndex + 6 >= input.length()) {
+            throw new FloraException("At least set a start time bro");
+        }
+
+        int toIndex = input.indexOf("/to");
+        if (toIndex == -1 || toIndex + 4 >= input.length()) {
+            throw new FloraException("At least set an end time bro");
+        }
+
+        String taskDesc = input.substring(firstSpaceIndex + 1, fromIndex - 1);
+        String taskStartStr = input.substring(fromIndex + 6, toIndex - 1);
+        String taskEndStr = input.substring(toIndex + 4);
+
+        LocalDateTime taskStart = parseDateTime(taskStartStr, "start date/time");
+        LocalDateTime taskEnd = parseDateTime(taskEndStr, "end date/time");
+
+        return new AddEventCommand(taskDesc, taskStart, taskEnd);
+    }
+
+    /**
+     * Parses a find command from the user input.
+     *
+     * @param input           The raw user input string.
+     * @param firstSpaceIndex The index of the first space in the input.
+     * @return The parsed {@code FindCommand}.
+     * @throws FloraException If the keyword is missing.
+     */
+    private static Command parseFind(String input, int firstSpaceIndex) throws FloraException {
+        if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+            throw new FloraException("Put a keyword.");
+        }
+
+        String keyword = input.substring(firstSpaceIndex + 1);
+        return new FindCommand(keyword);
+    }
+
+    /**
+     * Returns a randomly selected error message for invalid commands.
+     *
+     * @return A random error message string.
+     */
+    private static String getInvalidCommandMessage() {
+        String[] strings = {"I guess bro", "Whatever that means"};
+        Random rand = new Random(System.currentTimeMillis());
+        int randomIndex = rand.nextInt(strings.length);
+        return strings[randomIndex];
     }
 
     /**
