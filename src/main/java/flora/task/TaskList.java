@@ -1,14 +1,14 @@
 package flora.task;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class TaskList implements Iterable<Task> {
     private final List<Task> tasks;
 
     public TaskList() {
-        this.tasks = new ArrayList<>();
+        tasks = new ArrayList<>();
     }
 
     public TaskList(List<Task> tasks) {

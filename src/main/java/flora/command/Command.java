@@ -1,9 +1,9 @@
 package flora.command;
 
-import flora.ui.Ui;
+import flora.exception.FloraException;
 import flora.storage.Storage;
 import flora.task.TaskList;
-import flora.exception.FloraException;
+import flora.ui.Ui;
 
 public abstract class Command {
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws FloraException;

@@ -6,17 +6,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-import flora.task.*;
 import flora.exception.FloraException;
+import flora.task.Deadline;
+import flora.task.Event;
+import flora.task.Task;
+import flora.task.TaskList;
+import flora.task.Todo;
 
 public class Storage {
+    private static final DateTimeFormatter DATE_TIME_FILE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
     private final Path filePath;
-    private static final DateTimeFormatter dateTimeFileFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
 
     public Storage(String filePath) {
         this.filePath = Paths.get(filePath);
@@ -36,14 +40,14 @@ public class Storage {
             break;
         case "D":
             String dueStr = parts[3];
-            LocalDateTime due = LocalDateTime.parse(dueStr, dateTimeFileFmt);
+            LocalDateTime due = LocalDateTime.parse(dueStr, DATE_TIME_FILE_FMT);
             task = new Deadline(description, due);
             break;
         case "E":
             String startStr = parts[3];
             String endStr = parts[4];
-            LocalDateTime start = LocalDateTime.parse(startStr, dateTimeFileFmt);
-            LocalDateTime end = LocalDateTime.parse(endStr, dateTimeFileFmt);
+            LocalDateTime start = LocalDateTime.parse(startStr, DATE_TIME_FILE_FMT);
+            LocalDateTime end = LocalDateTime.parse(endStr, DATE_TIME_FILE_FMT);
             task = new Event(description, start, end);
             break;
         default:

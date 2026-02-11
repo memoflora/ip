@@ -1,11 +1,11 @@
 package flora;
 
-import flora.ui.Ui;
-import flora.storage.Storage;
-import flora.task.TaskList;
-import flora.parser.Parser;
 import flora.command.Command;
 import flora.exception.FloraException;
+import flora.parser.Parser;
+import flora.storage.Storage;
+import flora.task.TaskList;
+import flora.ui.Ui;
 
 public class Flora {
     private final Ui ui;

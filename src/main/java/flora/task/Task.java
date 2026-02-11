@@ -2,11 +2,11 @@ package flora.task;
 
 public abstract class Task {
     protected String description;
-    protected boolean done;
+    protected boolean isDone;
 
     public Task(String description) {
         this.description = description;
-        this.done = false;
+        isDone = false;
     }
 
     public String getDescription() {
@@ -14,15 +14,15 @@ public abstract class Task {
     }
 
     public boolean isDone() {
-        return done;
+        return isDone;
     }
 
     public void mark() {
-        done = true;
+        isDone = true;
     }
 
     public void unmark() {
-        done = false;
+        isDone = false;
     }
 
     protected abstract String getType();

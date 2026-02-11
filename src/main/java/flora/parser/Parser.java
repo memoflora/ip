@@ -1,17 +1,26 @@
 package flora.parser;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Random;
 
-import flora.command.*;
+import flora.command.AddDeadlineCommand;
+import flora.command.AddEventCommand;
+import flora.command.AddTodoCommand;
+import flora.command.Command;
+import flora.command.DeleteCommand;
+import flora.command.ExitCommand;
+import flora.command.FindCommand;
+import flora.command.ListCommand;
+import flora.command.MarkCommand;
+import flora.command.UnmarkCommand;
 import flora.exception.FloraException;
 
 public class Parser {
-    private static final DateTimeFormatter dateTimeFmt = DateTimeFormatter.ofPattern("d/M/yyyy[ H:mm]");
+    private static final DateTimeFormatter DATE_TIME_FMT = DateTimeFormatter.ofPattern("d/M/yyyy[ H:mm]");
 
     public static Command parse(String input) throws FloraException {
         String command = input;
@@ -31,7 +40,7 @@ public class Parser {
             return new AddTodoCommand(taskDesc);
         }
 
-        case "deadline" : {
+        case "deadline": {
             if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
                 throw new FloraException("At least put something bro");
             }
@@ -61,7 +70,7 @@ public class Parser {
                 break;
             default:
                 try {
-                    taskDue = LocalDateTime.parse(taskDueStr, dateTimeFmt);
+                    taskDue = LocalDateTime.parse(taskDueStr, DATE_TIME_FMT);
                 } catch (DateTimeParseException e) {
                     throw new FloraException("Invalid due date/time: " + taskDueStr);
                 }
@@ -72,7 +81,7 @@ public class Parser {
             return new AddDeadlineCommand(taskDesc, taskDue);
         }
 
-        case "event" : {
+        case "event": {
             if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
                 throw new FloraException("At least put something bro");
             }
@@ -95,13 +104,13 @@ public class Parser {
             LocalDateTime taskEnd;
 
             try {
-                taskStart = LocalDateTime.parse(taskStartStr, dateTimeFmt);
+                taskStart = LocalDateTime.parse(taskStartStr, DATE_TIME_FMT);
             } catch (DateTimeParseException e) {
                 throw new FloraException("Invalid start date/time: " + taskStartStr);
             }
 
             try {
-                taskEnd = LocalDateTime.parse(taskEndStr, dateTimeFmt);
+                taskEnd = LocalDateTime.parse(taskEndStr, DATE_TIME_FMT);
             } catch (DateTimeParseException e) {
                 throw new FloraException("Invalid end date/time: " + taskEndStr);
             }
