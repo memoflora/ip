@@ -42,18 +42,12 @@ public class Parser {
 
         switch (command.toLowerCase()) {
         case "todo": {
-            if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-                throw new FloraException("At least put something bro");
-            }
-
-            String taskDesc = input.substring(firstSpaceIndex + 1);
+            String taskDesc = getArguments(input, firstSpaceIndex, "At least put something bro");
             return new AddTodoCommand(taskDesc);
         }
 
         case "deadline": {
-            if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-                throw new FloraException("At least put something bro");
-            }
+            getArguments(input, firstSpaceIndex, "At least put something bro");
 
             int byIndex = input.indexOf("/by");
             if (byIndex == -1 || byIndex + 4 >= input.length()) {
@@ -79,12 +73,7 @@ public class Parser {
                 taskDue = LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
                 break;
             default:
-                try {
-                    taskDue = LocalDateTime.parse(taskDueStr, DATE_TIME_FMT);
-                } catch (DateTimeParseException e) {
-                    throw new FloraException("Invalid due date/time: " + taskDueStr);
-                }
-
+                taskDue = parseDateTime(taskDueStr, "due date/time");
                 break;
             }
 
@@ -92,9 +81,7 @@ public class Parser {
         }
 
         case "event": {
-            if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-                throw new FloraException("At least put something bro");
-            }
+            getArguments(input, firstSpaceIndex, "At least put something bro");
 
             int fromIndex = input.indexOf("/from");
             if (fromIndex == -1 || fromIndex + 6 >= input.length()) {
@@ -110,30 +97,14 @@ public class Parser {
             String taskStartStr = input.substring(fromIndex + 6, toIndex - 1);
             String taskEndStr = input.substring(toIndex + 4);
 
-            LocalDateTime taskStart;
-            LocalDateTime taskEnd;
-
-            try {
-                taskStart = LocalDateTime.parse(taskStartStr, DATE_TIME_FMT);
-            } catch (DateTimeParseException e) {
-                throw new FloraException("Invalid start date/time: " + taskStartStr);
-            }
-
-            try {
-                taskEnd = LocalDateTime.parse(taskEndStr, DATE_TIME_FMT);
-            } catch (DateTimeParseException e) {
-                throw new FloraException("Invalid end date/time: " + taskEndStr);
-            }
+            LocalDateTime taskStart = parseDateTime(taskStartStr, "start date/time");
+            LocalDateTime taskEnd = parseDateTime(taskEndStr, "end date/time");
 
             return new AddEventCommand(taskDesc, taskStart, taskEnd);
         }
 
         case "find": {
-            if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-                throw new FloraException("Put a keyword.");
-            }
-
-            String keyword = input.substring(firstSpaceIndex + 1);
+            String keyword = getArguments(input, firstSpaceIndex, "Put a keyword.");
             return new FindCommand(keyword);
         }
 
@@ -161,6 +132,38 @@ public class Parser {
             Random rand = new Random(System.currentTimeMillis());
             int randomIndex = rand.nextInt(strings.length);
             throw new FloraException(strings[randomIndex]);
+        }
+    }
+
+    /**
+     * Validates that the input has arguments after the command and returns them.
+     *
+     * @param input           The raw user input string.
+     * @param firstSpaceIndex The index of the first space in the input.
+     * @param errorMsg        The error message to throw if arguments are missing.
+     * @return The arguments substring after the command.
+     * @throws FloraException If no arguments are provided.
+     */
+    private static String getArguments(String input, int firstSpaceIndex, String errorMsg) throws FloraException {
+        if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+            throw new FloraException(errorMsg);
+        }
+        return input.substring(firstSpaceIndex + 1);
+    }
+
+    /**
+     * Parses a date/time string into a LocalDateTime.
+     *
+     * @param dateStr   The date/time string to parse.
+     * @param fieldName The name of the field, used in error messages.
+     * @return The parsed LocalDateTime.
+     * @throws FloraException If the string cannot be parsed.
+     */
+    private static LocalDateTime parseDateTime(String dateStr, String fieldName) throws FloraException {
+        try {
+            return LocalDateTime.parse(dateStr, DATE_TIME_FMT);
+        } catch (DateTimeParseException e) {
+            throw new FloraException("Invalid " + fieldName + ": " + dateStr);
         }
     }
 

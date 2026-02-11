@@ -192,7 +192,7 @@ public class FloraTest {
 
     @Test
     public void taskList_constructorWithList() {
-        List<flora.task.Task> tasks = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
         tasks.add(new Todo("a"));
         tasks.add(new Todo("b"));
         TaskList list = new TaskList(tasks);
@@ -338,7 +338,7 @@ public class FloraTest {
 
     @Test
     public void storage_parseTask_todo() throws FloraException {
-        flora.task.Task task = Storage.parseTask("T | 0 | read book");
+        Task task = Storage.parseTask("T | 0 | read book");
         assertInstanceOf(Todo.class, task);
         assertEquals("read book", task.getDescription());
         assertFalse(task.isDone());
@@ -346,13 +346,13 @@ public class FloraTest {
 
     @Test
     public void storage_parseTask_todoDone() throws FloraException {
-        flora.task.Task task = Storage.parseTask("T | 1 | read book");
+        Task task = Storage.parseTask("T | 1 | read book");
         assertTrue(task.isDone());
     }
 
     @Test
     public void storage_parseTask_deadline() throws FloraException {
-        flora.task.Task task = Storage.parseTask("D | 0 | submit report | 01/12/2024 18:00");
+        Task task = Storage.parseTask("D | 0 | submit report | 01/12/2024 18:00");
         assertInstanceOf(Deadline.class, task);
         assertEquals("submit report", task.getDescription());
         assertFalse(task.isDone());
@@ -360,7 +360,7 @@ public class FloraTest {
 
     @Test
     public void storage_parseTask_deadlineWithTime() throws FloraException {
-        flora.task.Task task = Storage.parseTask("D | 1 | submit report | 01/12/2024 18:00");
+        Task task = Storage.parseTask("D | 1 | submit report | 01/12/2024 18:00");
         assertInstanceOf(Deadline.class, task);
         assertTrue(task.isDone());
         assertEquals("[D][X] submit report (by: 1 Dec 2024 at 18:00)", task.toString());
@@ -368,7 +368,7 @@ public class FloraTest {
 
     @Test
     public void storage_parseTask_event() throws FloraException {
-        flora.task.Task task = Storage.parseTask(
+        Task task = Storage.parseTask(
                 "E | 0 | project meeting | 06/08/2024 14:00 | 06/08/2024 16:00");
         assertInstanceOf(Event.class, task);
         assertEquals("project meeting", task.getDescription());
@@ -386,14 +386,14 @@ public class FloraTest {
     @Test
     public void storage_todoRoundTrip() throws FloraException {
         Todo original = new Todo("read book");
-        flora.task.Task parsed = Storage.parseTask(original.toFileString());
+        Task parsed = Storage.parseTask(original.toFileString());
         assertEquals(original.toString(), parsed.toString());
     }
 
     @Test
     public void storage_deadlineRoundTrip() throws FloraException {
         Deadline original = new Deadline("submit", LocalDateTime.of(2024, 12, 1, 18, 0));
-        flora.task.Task parsed = Storage.parseTask(original.toFileString());
+        Task parsed = Storage.parseTask(original.toFileString());
         assertEquals(original.toString(), parsed.toString());
     }
 
@@ -402,7 +402,7 @@ public class FloraTest {
         Event original = new Event("meeting",
                 LocalDateTime.of(2024, 8, 6, 14, 0),
                 LocalDateTime.of(2024, 8, 6, 16, 0));
-        flora.task.Task parsed = Storage.parseTask(original.toFileString());
+        Task parsed = Storage.parseTask(original.toFileString());
         assertEquals(original.toString(), parsed.toString());
     }
 
@@ -410,7 +410,7 @@ public class FloraTest {
     public void storage_markedTaskRoundTrip() throws FloraException {
         Todo original = new Todo("read book");
         original.mark();
-        flora.task.Task parsed = Storage.parseTask(original.toFileString());
+        Task parsed = Storage.parseTask(original.toFileString());
         assertTrue(parsed.isDone());
         assertEquals(original.toString(), parsed.toString());
     }
