@@ -9,10 +9,10 @@ import flora.task.TaskList;
  * Handles all user interface interactions, including reading input and displaying output.
  */
 public class Ui {
-    private static final String indentStr = "     ";
-    private static final String line = "____________________________________________________________";
-    private static final String[] greetings = {"Hi there! Flora here.", "Ask me anything!"};
-    private static final String farewell = "Talk to you later—bye!";
+    private static final String INDENT_STR = "     ";
+    private static final String LINE = "____________________________________________________________";
+    private static final String[] GREETINGS = {"Hi there! Flora here.", "Ask me anything!"};
+    private static final String FAREWELL = "Talk to you later—bye!";
     private final Scanner sc = new Scanner(System.in);
 
     /**
@@ -25,14 +25,14 @@ public class Ui {
     }
 
     public void indent(String str) {
-        System.out.println(indentStr + str);
+        System.out.println(INDENT_STR + str);
     }
 
     /**
      * Displays a horizontal divider line.
      */
     public void showLine() {
-        System.out.println(indentStr.substring(0, indentStr.length() - 1) + line);
+        System.out.println(INDENT_STR.substring(0, INDENT_STR.length() - 1) + LINE);
     }
 
     /**
@@ -47,7 +47,7 @@ public class Ui {
      */
     public void showGreeting() {
         showLine();
-        for (String greeting : greetings) {
+        for (String greeting : GREETINGS) {
             indent(greeting);
         }
         showLine();
@@ -58,7 +58,7 @@ public class Ui {
      * Displays the farewell message when the application exits.
      */
     public void showFarewell() {
-        indent(farewell);
+        indent(FAREWELL);
     }
 
     /**

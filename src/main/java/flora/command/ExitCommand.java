@@ -1,8 +1,8 @@
 package flora.command;
 
-import flora.ui.Ui;
 import flora.storage.Storage;
 import flora.task.TaskList;
+import flora.ui.Ui;
 
 /**
  * Command to exit the Flora application.

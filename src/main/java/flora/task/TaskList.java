@@ -1,8 +1,8 @@
 package flora.task;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents a list of tasks with operations to add, remove, find, and access tasks.
@@ -14,7 +14,7 @@ public class TaskList implements Iterable<Task> {
      * Constructs an empty TaskList.
      */
     public TaskList() {
-        this.tasks = new ArrayList<>();
+        tasks = new ArrayList<>();
     }
 
     /**

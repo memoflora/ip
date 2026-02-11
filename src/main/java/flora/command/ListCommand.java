@@ -1,8 +1,8 @@
 package flora.command;
 
-import flora.ui.Ui;
 import flora.storage.Storage;
 import flora.task.TaskList;
+import flora.ui.Ui;
 
 /**
  * Command to display all tasks in the task list.

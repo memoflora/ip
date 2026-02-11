@@ -1,10 +1,10 @@
 package flora.command;
 
-import flora.ui.Ui;
+import flora.exception.FloraException;
 import flora.storage.Storage;
 import flora.task.Task;
 import flora.task.TaskList;
-import flora.exception.FloraException;
+import flora.ui.Ui;
 
 /**
  * Command to mark a task as done.
