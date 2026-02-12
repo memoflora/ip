@@ -20,7 +20,7 @@ public class Ui {
      *
      * @return The user's input as a string.
      */
-    public String readCommand() {
+    public String readInput() {
         return sc.nextLine();
     }
 

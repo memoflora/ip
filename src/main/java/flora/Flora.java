@@ -42,7 +42,7 @@ public class Flora {
         boolean isExit = false;
         while (!isExit) {
             try {
-                String input = ui.readCommand();
+                String input = ui.readInput();
                 ui.showLine();
                 Command cmd = Parser.parse(input);
                 cmd.execute(tasks, ui, storage);
