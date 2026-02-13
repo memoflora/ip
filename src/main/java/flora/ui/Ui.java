@@ -24,8 +24,13 @@ public class Ui {
         return sc.nextLine();
     }
 
-    public void indent(String str) {
-        System.out.println(INDENT_STR + str);
+    /**
+     * Prints the given text with indentation.
+     *
+     * @param text The text to print.
+     */
+    public void printIndented(String text) {
+        System.out.println(INDENT_STR + text);
     }
 
     /**
@@ -48,7 +53,7 @@ public class Ui {
     public void showGreeting() {
         showLine();
         for (String greeting : GREETINGS) {
-            indent(greeting);
+            printIndented(greeting);
         }
         showLine();
         showNewLine();
@@ -58,7 +63,7 @@ public class Ui {
      * Displays the farewell message when the application exits.
      */
     public void showFarewell() {
-        indent(FAREWELL);
+        printIndented(FAREWELL);
     }
 
     /**
@@ -67,7 +72,7 @@ public class Ui {
      * @param errorMsg The error message to display.
      */
     public void showError(String errorMsg) {
-        indent(errorMsg);
+        printIndented(errorMsg);
     }
 
     /**
@@ -77,13 +82,13 @@ public class Ui {
      */
     public void showTaskList(TaskList tasks) {
         if (tasks.size() == 0) {
-            indent("Your list is empty.");
+            printIndented("Your list is empty.");
             return;
         }
 
-        indent("Here are the tasks in your list: ");
+        printIndented("Here are the tasks in your list: ");
         for (int i = 1; i <= tasks.size(); i++) {
-            indent(i + "." + tasks.get(i));
+            printIndented(i + "." + tasks.get(i));
         }
     }
 
@@ -94,13 +99,13 @@ public class Ui {
      */
     public void showMatchingTasks(TaskList matchingTasks) {
         if (matchingTasks.size() == 0) {
-            indent("No matching tasks.");
+            printIndented("No matching tasks.");
             return;
         }
 
-        indent("Here are the matching tasks in your list: ");
+        printIndented("Here are the matching tasks in your list: ");
         for (int i = 1; i <= matchingTasks.size(); i++) {
-            indent(i + "." + matchingTasks.get(i));
+            printIndented(i + "." + matchingTasks.get(i));
         }
     }
 
@@ -111,9 +116,9 @@ public class Ui {
      * @param tasksSize The total number of tasks after adding.
      */
     public void showAddedTask(Task task, int tasksSize) {
-        indent("Got it. I've added this task:");
-        indent("  " + task);
-        indent("Now you have " + tasksSize + " task" + (tasksSize > 1 ? "s" : "") + " in the list.");
+        printIndented("Got it. I've added this task:");
+        printIndented("  " + task);
+        printIndented("Now you have " + tasksSize + " task" + (tasksSize > 1 ? "s" : "") + " in the list.");
     }
 
     /**
@@ -123,9 +128,9 @@ public class Ui {
      * @param tasksSize The total number of tasks after deleting.
      */
     public void showDeletedTask(Task task, int tasksSize) {
-        indent("Noted. I've removed this task:");
-        indent("  " + task);
-        indent("Now you have " + tasksSize + " task" + (tasksSize > 1 ? "s" : "") + " in the list.");
+        printIndented("Noted. I've removed this task:");
+        printIndented("  " + task);
+        printIndented("Now you have " + tasksSize + " task" + (tasksSize > 1 ? "s" : "") + " in the list.");
     }
 
     /**
@@ -134,8 +139,8 @@ public class Ui {
      * @param task The task that was marked.
      */
     public void showMarkedTask(Task task) {
-        indent("Nice! I've marked this task as done:");
-        indent("  " + task);
+        printIndented("Nice! I've marked this task as done:");
+        printIndented("  " + task);
     }
 
     /**
@@ -144,21 +149,21 @@ public class Ui {
      * @param task The task that was unmarked.
      */
     public void showUnmarkedTask(Task task) {
-        indent("Ok, I've marked this task as not done yet:");
-        indent("  " + task);
+        printIndented("Ok, I've marked this task as not done yet:");
+        printIndented("  " + task);
     }
 
     /**
      * Displays a message indicating the task is already marked as done.
      */
     public void showAlreadyMarked() {
-        indent("That task is already marked bro");
+        printIndented("That task is already marked bro");
     }
 
     /**
      * Displays a message indicating the task is already marked as not done.
      */
     public void showAlreadyUnmarked() {
-        indent("That task is already unmarked bro");
+        printIndented("That task is already unmarked bro");
     }
 }
