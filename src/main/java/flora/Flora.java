@@ -44,9 +44,9 @@ public class Flora {
             try {
                 String input = ui.readInput();
                 ui.showLine();
-                Command cmd = Parser.parse(input);
-                cmd.execute(tasks, ui, storage);
-                isExit = cmd.isExit();
+                Command c = Parser.parse(input);
+                c.execute(tasks, ui, storage);
+                isExit = c.isExit();
             } catch (FloraException e) {
                 ui.showError(e.getMessage());
             } finally {
