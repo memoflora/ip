@@ -31,6 +31,7 @@ public class Storage {
      * @param filePath Path to the file used for persisting tasks.
      */
     public Storage(String filePath) {
+        assert filePath != null && !filePath.isBlank() : "Storage file path must not be null or blank";
         this.filePath = Paths.get(filePath);
     }
 
@@ -42,7 +43,9 @@ public class Storage {
      * @throws FloraException If the line contains an invalid task type.
      */
     public static Task parseTask(String line) throws FloraException {
+        assert line != null : "Storage line must not be null";
         String[] parts = line.split(" \\| ");
+        assert parts.length >= 3 : "Storage line must have at least 3 pipe-delimited fields";
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
         String description = parts[2];
@@ -111,6 +114,7 @@ public class Storage {
      * @throws FloraException If the file cannot be written to.
      */
     public void save(TaskList tasks) throws FloraException {
+        assert tasks != null : "TaskList to save must not be null";
         try {
             Files.createDirectories(filePath.getParent());
 

@@ -19,6 +19,7 @@ public class DeleteCommand extends Command {
      * @param taskIndex The 1-based index of the task to delete.
      */
     public DeleteCommand(int taskIndex) {
+        assert taskIndex > 0 : "Task index must be positive";
         this.taskIndex = taskIndex;
     }
 
@@ -32,8 +33,10 @@ public class DeleteCommand extends Command {
         }
 
         task = tasks.remove(taskIndex);
+        assert task != null : "Removed task must not be null";
         storage.save(tasks);
         size = tasks.size();
+        assert size >= 0 : "Task list size must not be negative after deletion";
     }
 
     /**

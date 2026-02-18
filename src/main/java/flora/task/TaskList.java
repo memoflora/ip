@@ -23,6 +23,7 @@ public class TaskList implements Iterable<Task> {
      * @param tasks The initial list of tasks.
      */
     public TaskList(List<Task> tasks) {
+        assert tasks != null : "Initial task list must not be null";
         this.tasks = tasks;
     }
 
@@ -32,6 +33,7 @@ public class TaskList implements Iterable<Task> {
      * @param task The task to add.
      */
     public void add(Task task) {
+        assert task != null : "Cannot add a null task";
         tasks.add(task);
     }
 
@@ -42,6 +44,7 @@ public class TaskList implements Iterable<Task> {
      * @return The removed task.
      */
     public Task remove(int index) {
+        assert index >= 1 && index <= tasks.size() : "Task index out of bounds: " + index;
         return tasks.remove(index - 1);
     }
 
@@ -52,6 +55,7 @@ public class TaskList implements Iterable<Task> {
      * @return The task at the specified index.
      */
     public Task get(int index) {
+        assert index >= 1 && index <= tasks.size() : "Task index out of bounds: " + index;
         return tasks.get(index - 1);
     }
 

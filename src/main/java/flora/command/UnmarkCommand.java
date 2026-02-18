@@ -19,6 +19,7 @@ public class UnmarkCommand extends Command {
      * @param taskIndex The 1-based index of the task to mark as not done.
      */
     public UnmarkCommand(int taskIndex) {
+        assert taskIndex > 0 : "Task index must be positive";
         this.taskIndex = taskIndex;
     }
 
@@ -38,6 +39,7 @@ public class UnmarkCommand extends Command {
         }
 
         task.unmark();
+        assert !task.isDone() : "Task must be unmarked after unmark()";
         storage.save(tasks);
     }
 

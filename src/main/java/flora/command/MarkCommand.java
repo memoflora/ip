@@ -19,6 +19,7 @@ public class MarkCommand extends Command {
      * @param taskIndex The 1-based index of the task to mark as done.
      */
     public MarkCommand(int taskIndex) {
+        assert taskIndex > 0 : "Task index must be positive";
         this.taskIndex = taskIndex;
     }
 
@@ -38,6 +39,7 @@ public class MarkCommand extends Command {
         }
 
         task.mark();
+        assert task.isDone() : "Task must be marked as done after mark()";
         storage.save(tasks);
     }
 

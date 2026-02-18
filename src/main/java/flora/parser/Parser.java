@@ -68,6 +68,7 @@ public class Parser {
         }
 
         String taskDesc = input.substring(firstSpaceIndex + 1);
+        assert !taskDesc.isBlank() : "Todo description must not be blank after parsing";
         return new AddTodoCommand(taskDesc);
     }
 
@@ -94,6 +95,8 @@ public class Parser {
 
         String taskDesc = input.substring(firstSpaceIndex + 1, byIndex - 1);
         String taskDueStr = input.substring(byIndex + 4);
+        assert !taskDesc.isBlank() : "Deadline description must not be blank";
+        assert !taskDueStr.isBlank() : "Deadline due date string must not be blank";
 
         LocalDateTime taskDue = switch (taskDueStr.toLowerCase()) {
         case "today", "tonight" -> LocalDate.now().atTime(LocalTime.MAX);
@@ -134,6 +137,9 @@ public class Parser {
         String taskDesc = input.substring(firstSpaceIndex + 1, fromIndex - 1);
         String taskStartStr = input.substring(fromIndex + 6, toIndex - 1);
         String taskEndStr = input.substring(toIndex + 4);
+        assert !taskDesc.isBlank() : "Event description must not be blank";
+        assert !taskStartStr.isBlank() : "Event start date string must not be blank";
+        assert !taskEndStr.isBlank() : "Event end date string must not be blank";
 
         LocalDateTime taskStart = parseDateTime(taskStartStr, "start date/time");
         LocalDateTime taskEnd = parseDateTime(taskEndStr, "end date/time");
@@ -155,6 +161,7 @@ public class Parser {
         }
 
         String keyword = input.substring(firstSpaceIndex + 1);
+        assert !keyword.isBlank() : "Find keyword must not be blank after parsing";
         return new FindCommand(keyword);
     }
 
@@ -208,6 +215,7 @@ public class Parser {
             throw new FloraException("Invalid task index: " + e.getMessage());
         }
 
+        assert taskIndex > 0 : "Task index must be positive, got: " + taskIndex;
         return taskIndex;
     }
 }

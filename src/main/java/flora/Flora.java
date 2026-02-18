@@ -35,8 +35,10 @@ public class Flora {
      * @return The response message to display.
      */
     public String getResponse(String input) {
+        assert input != null : "User input must not be null";
         try {
             Command c = Parser.parse(input);
+            assert c != null : "Parser must return a non-null command";
             c.execute(tasks, storage);
             exit = c.isExit();
             return c.getMessage();

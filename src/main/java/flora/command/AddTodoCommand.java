@@ -19,6 +19,7 @@ public class AddTodoCommand extends Command {
      * @param taskDesc Description of the todo task.
      */
     public AddTodoCommand(String taskDesc) {
+        assert taskDesc != null && !taskDesc.isBlank() : "Todo description must not be null or blank";
         this.taskDesc = taskDesc;
     }
 
@@ -31,6 +32,7 @@ public class AddTodoCommand extends Command {
         tasks.add(todo);
         storage.save(tasks);
         size = tasks.size();
+        assert size > 0 : "Task list must be non-empty after adding a task";
     }
 
     /**
