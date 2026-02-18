@@ -33,7 +33,7 @@ application {
 }
 
 checkstyle {
-    toolVersion = '11.0.0'
+    toolVersion = '13.2.0'
 }
 
 shadowJar {
