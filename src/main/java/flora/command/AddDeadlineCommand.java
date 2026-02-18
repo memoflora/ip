@@ -36,7 +36,6 @@ public class AddDeadlineCommand extends Command {
         tasks.add(deadline);
         storage.save(tasks);
         size = tasks.size();
-        message = getMessage();
     }
 
     /**

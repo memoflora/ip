@@ -34,7 +34,6 @@ public class DeleteCommand extends Command {
         task = tasks.remove(taskIndex);
         storage.save(tasks);
         size = tasks.size();
-        message = getMessage();
     }
 
     /**

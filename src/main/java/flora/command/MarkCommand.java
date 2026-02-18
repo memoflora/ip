@@ -34,13 +34,11 @@ public class MarkCommand extends Command {
         task = tasks.get(taskIndex);
         isMarked = task.isDone();
         if (isMarked) {
-            message = getMessage();
             return;
         }
 
         task.mark();
         storage.save(tasks);
-        message = getMessage();
     }
 
     /**

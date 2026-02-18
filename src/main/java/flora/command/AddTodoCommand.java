@@ -31,7 +31,6 @@ public class AddTodoCommand extends Command {
         tasks.add(todo);
         storage.save(tasks);
         size = tasks.size();
-        message = getMessage();
     }
 
     /**

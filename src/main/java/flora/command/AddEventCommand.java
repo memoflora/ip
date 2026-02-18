@@ -39,7 +39,6 @@ public class AddEventCommand extends Command {
         tasks.add(event);
         storage.save(tasks);
         size = tasks.size();
-        message = getMessage();
     }
 
     /**

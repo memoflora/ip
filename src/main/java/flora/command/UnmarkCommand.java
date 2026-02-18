@@ -34,13 +34,11 @@ public class UnmarkCommand extends Command {
         task = tasks.get(taskIndex);
         isUnmarked = !task.isDone();
         if (isUnmarked) {
-            message = getMessage();
             return;
         }
 
         task.unmark();
         storage.save(tasks);
-        message = getMessage();
     }
 
     /**
