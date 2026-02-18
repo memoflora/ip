@@ -23,6 +23,8 @@ public class AddDeadlineCommand extends Command {
      * @param taskDue  Due date and time of the deadline.
      */
     public AddDeadlineCommand(String taskDesc, LocalDateTime taskDue) {
+        assert taskDesc != null && !taskDesc.isBlank() : "Deadline description must not be null or blank";
+        assert taskDue != null : "Deadline due date must not be null";
         this.taskDesc = taskDesc;
         this.taskDue = taskDue;
     }
@@ -36,6 +38,7 @@ public class AddDeadlineCommand extends Command {
         tasks.add(deadline);
         storage.save(tasks);
         size = tasks.size();
+        assert size > 0 : "Task list must be non-empty after adding a task";
     }
 
     /**

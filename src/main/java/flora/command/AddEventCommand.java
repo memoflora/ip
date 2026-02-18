@@ -25,6 +25,9 @@ public class AddEventCommand extends Command {
      * @param taskEnd   End date and time of the event.
      */
     public AddEventCommand(String taskDesc, LocalDateTime taskStart, LocalDateTime taskEnd) {
+        assert taskDesc != null && !taskDesc.isBlank() : "Event description must not be null or blank";
+        assert taskStart != null : "Event start time must not be null";
+        assert taskEnd != null : "Event end time must not be null";
         this.taskDesc = taskDesc;
         this.taskStart = taskStart;
         this.taskEnd = taskEnd;
@@ -39,6 +42,7 @@ public class AddEventCommand extends Command {
         tasks.add(event);
         storage.save(tasks);
         size = tasks.size();
+        assert size > 0 : "Task list must be non-empty after adding a task";
     }
 
     /**
