@@ -69,7 +69,8 @@ public class Event extends Task {
      */
     @Override
     public String toFileString() {
-        return super.toFileString() + " | " + convertDateTimeToFileString(start) + " | " + convertDateTimeToFileString(end);
+        return super.toFileString() + " | " + convertDateTimeToFileString(start)
+                + " | " + convertDateTimeToFileString(end);
     }
 
     /**
@@ -77,6 +78,7 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return super.toString() + " (from: " + convertDateTimeToString(start) + " to: " + convertDateTimeToString(end) + ")";
+        return super.toString() + " (from: " + convertDateTimeToString(start)
+                + " to: " + convertDateTimeToString(end) + ")";
     }
 }

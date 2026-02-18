@@ -41,16 +41,16 @@ public class Parser {
         }
 
         return switch (command.toLowerCase()) {
-            case "todo" -> parseTodo(input, firstSpaceIndex);
-            case "deadline" -> parseDeadline(input, firstSpaceIndex);
-            case "event" -> parseEvent(input, firstSpaceIndex);
-            case "find" -> parseFind(input, firstSpaceIndex);
-            case "delete" -> new DeleteCommand(getTaskIndex(input, firstSpaceIndex));
-            case "mark" -> new MarkCommand(getTaskIndex(input, firstSpaceIndex));
-            case "unmark" -> new UnmarkCommand(getTaskIndex(input, firstSpaceIndex));
-            case "list" -> new ListCommand();
-            case "bye" -> new ExitCommand();
-            default -> throw new FloraException(getInvalidCommandMessage());
+        case "todo" -> parseTodo(input, firstSpaceIndex);
+        case "deadline" -> parseDeadline(input, firstSpaceIndex);
+        case "event" -> parseEvent(input, firstSpaceIndex);
+        case "find" -> parseFind(input, firstSpaceIndex);
+        case "delete" -> new DeleteCommand(getTaskIndex(input, firstSpaceIndex));
+        case "mark" -> new MarkCommand(getTaskIndex(input, firstSpaceIndex));
+        case "unmark" -> new UnmarkCommand(getTaskIndex(input, firstSpaceIndex));
+        case "list" -> new ListCommand();
+        case "bye" -> new ExitCommand();
+        default -> throw new FloraException(getInvalidCommandMessage());
         };
     }
 
@@ -96,11 +96,11 @@ public class Parser {
         String taskDueStr = input.substring(byIndex + 4);
 
         LocalDateTime taskDue = switch (taskDueStr.toLowerCase()) {
-            case "today", "tonight" -> LocalDate.now().atTime(LocalTime.MAX);
-            case "tomorrow" -> LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
-            case "next week" -> LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
-            case "next month" -> LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
-            default -> parseDateTime(taskDueStr, "due date/time");
+        case "today", "tonight" -> LocalDate.now().atTime(LocalTime.MAX);
+        case "tomorrow" -> LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
+        case "next week" -> LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
+        case "next month" -> LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
+        default -> parseDateTime(taskDueStr, "due date/time");
         };
 
         return new AddDeadlineCommand(taskDesc, taskDue);

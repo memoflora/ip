@@ -1,5 +1,11 @@
 package flora;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +30,6 @@ import flora.task.Event;
 import flora.task.Task;
 import flora.task.TaskList;
 import flora.task.Todo;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FloraTest {
 
@@ -226,7 +226,7 @@ public class FloraTest {
     }
 
     @Test
-    public void parser_parseTodo_noDescription_throwsException() {
+    public void parseTodo_noDescription_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("todo"));
         assertEquals("At least put something bro", ex.getMessage());
     }
@@ -238,16 +238,14 @@ public class FloraTest {
     }
 
     @Test
-    public void parser_parseDeadline_noBy_throwsException() {
-        FloraException ex = assertThrows(FloraException.class,
-                () -> Parser.parse("deadline submit report"));
+    public void parseDeadline_noBy_throwsException() {
+        FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("deadline submit report"));
         assertEquals("At least set a due date bro", ex.getMessage());
     }
 
     @Test
-    public void parser_parseDeadline_invalidDate_throwsException() {
-        assertThrows(FloraException.class,
-                () -> Parser.parse("deadline submit /by not-a-date"));
+    public void parseDeadline_invalidDate_throwsException() {
+        assertThrows(FloraException.class, () -> Parser.parse("deadline submit /by not-a-date"));
     }
 
     @Test
@@ -257,16 +255,14 @@ public class FloraTest {
     }
 
     @Test
-    public void parser_parseEvent_noFrom_throwsException() {
-        FloraException ex = assertThrows(FloraException.class,
-                () -> Parser.parse("event meeting /to 6/8/2024 16:00"));
+    public void parseEvent_noFrom_throwsException() {
+        FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("event meeting /to 6/8/2024 16:00"));
         assertEquals("At least set a start time bro", ex.getMessage());
     }
 
     @Test
-    public void parser_parseEvent_noTo_throwsException() {
-        FloraException ex = assertThrows(FloraException.class,
-                () -> Parser.parse("event meeting /from 6/8/2024 14:00"));
+    public void parseEvent_noTo_throwsException() {
+        FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("event meeting /from 6/8/2024"));
         assertEquals("At least set an end time bro", ex.getMessage());
     }
 
@@ -307,19 +303,19 @@ public class FloraTest {
     }
 
     @Test
-    public void parser_parseFind_noKeyword_throwsException() {
+    public void parseFind_noKeyword_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("find"));
         assertEquals("Put a keyword.", ex.getMessage());
     }
 
     @Test
-    public void parser_parseMark_noIndex_throwsException() {
+    public void parseMark_noIndex_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("mark"));
         assertEquals("At least put an index bro", ex.getMessage());
     }
 
     @Test
-    public void parser_parseMark_invalidIndex_throwsException() {
+    public void parseMark_invalidIndex_throwsException() {
         assertThrows(FloraException.class, () -> Parser.parse("mark abc"));
     }
 
@@ -375,9 +371,8 @@ public class FloraTest {
     }
 
     @Test
-    public void storage_parseTask_invalidType_throwsException() {
-        FloraException ex = assertThrows(FloraException.class,
-                () -> Storage.parseTask("X | 0 | something"));
+    public void parseTask_invalidType_throwsException() {
+        FloraException ex = assertThrows(FloraException.class, () -> Storage.parseTask("X | 0 | something"));
         assertTrue(ex.getMessage().contains("Invalid task type"));
     }
 
