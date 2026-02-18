@@ -12,6 +12,7 @@ import flora.task.TaskList;
 public class Flora {
     private final Storage storage;
     private TaskList tasks;
+    private String loadError = null;
     private boolean shouldExit = false;
 
     /**
@@ -25,6 +26,7 @@ public class Flora {
             tasks = new TaskList(storage.load());
         } catch (FloraException e) {
             tasks = new TaskList();
+            loadError = "Error loading tasks: " + e.getMessage();
         }
     }
 
@@ -49,11 +51,16 @@ public class Flora {
 
     /**
      * Returns the welcome message shown when the application starts.
+     * If there was an error loading tasks from storage, the error message is prepended.
      *
-     * @return The welcome message string.
+     * @return The welcome message string, optionally preceded by a load error message.
      */
     public String getWelcomeMessage() {
-        return "Hi there! Flora here.\nAsk me anything!";
+        String welcome = "Hi there! Flora here.\nAsk me anything!";
+        if (loadError != null) {
+            return loadError + "\n" + welcome;
+        }
+        return welcome;
     }
 
     /**
