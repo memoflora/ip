@@ -4,13 +4,14 @@ import flora.exception.FloraException;
 import flora.storage.Storage;
 import flora.task.Task;
 import flora.task.TaskList;
-import flora.ui.Ui;
 
 /**
  * Command to delete a task from the task list by its index.
  */
 public class DeleteCommand extends Command {
     private final int taskIndex;
+    private Task task;
+    private int size;
 
     /**
      * Constructs a DeleteCommand with the given 1-based task index.
@@ -25,13 +26,23 @@ public class DeleteCommand extends Command {
      * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws FloraException {
+    public void execute(TaskList tasks, Storage storage) throws FloraException {
         if (taskIndex < 1 || taskIndex > tasks.size()) {
             throw new FloraException("Bro's out of bounds");
         }
 
-        Task task = tasks.remove(taskIndex);
+        task = tasks.remove(taskIndex);
         storage.save(tasks);
-        ui.showDeletedTask(task, tasks.size());
+        size = tasks.size();
+        message = getMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMessage() {
+        return "Noted. I've removed this task:\n  " + task
+                + "\nNow you have " + size + " task" + (size > 1 ? "s" : "") + " in the list.";
     }
 }

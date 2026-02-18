@@ -2,13 +2,13 @@ package flora.command;
 
 import flora.storage.Storage;
 import flora.task.TaskList;
-import flora.ui.Ui;
 
 /**
  * Command to find tasks whose descriptions contain a given keyword.
  */
 public class FindCommand extends Command {
     private final String keyword;
+    private TaskList matchingTasks;
 
     /**
      * Constructs a FindCommand with the given search keyword.
@@ -23,8 +23,23 @@ public class FindCommand extends Command {
      * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
-        TaskList matchingTasks = tasks.find(keyword);
-        ui.showMatchingTasks(matchingTasks);
+    public void execute(TaskList tasks, Storage storage) {
+        matchingTasks = tasks.find(keyword);
+        message = getMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMessage() {
+        if (matchingTasks.size() == 0) {
+            return "No matching tasks.";
+        }
+        StringBuilder sb = new StringBuilder("Here are the matching tasks in your list: ");
+        for (int i = 1; i <= matchingTasks.size(); i++) {
+            sb.append("\n").append(i).append(".").append(matchingTasks.get(i));
+        }
+        return sb.toString();
     }
 }

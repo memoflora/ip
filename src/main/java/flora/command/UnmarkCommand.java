@@ -4,13 +4,14 @@ import flora.exception.FloraException;
 import flora.storage.Storage;
 import flora.task.Task;
 import flora.task.TaskList;
-import flora.ui.Ui;
 
 /**
  * Command to mark a task as not done.
  */
 public class UnmarkCommand extends Command {
     private final int taskIndex;
+    private Task task;
+    private boolean isUnmarked;
 
     /**
      * Constructs an UnmarkCommand with the given 1-based task index.
@@ -25,19 +26,31 @@ public class UnmarkCommand extends Command {
      * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws FloraException {
+    public void execute(TaskList tasks, Storage storage) throws FloraException {
         if (taskIndex < 1 || taskIndex > tasks.size()) {
             throw new FloraException("Bro's out of bounds");
         }
 
-        Task task = tasks.get(taskIndex);
-        if (!task.isDone()) {
-            ui.showAlreadyUnmarked();
+        task = tasks.get(taskIndex);
+        isUnmarked = !task.isDone();
+        if (isUnmarked) {
+            message = getMessage();
             return;
         }
 
         task.unmark();
         storage.save(tasks);
-        ui.showUnmarkedTask(task);
+        message = getMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMessage() {
+        if (isUnmarked) {
+            return "That task is already unmarked bro";
+        }
+        return "Ok, I've marked this task as not done yet:\n  " + task;
     }
 }

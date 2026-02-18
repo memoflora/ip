@@ -4,13 +4,14 @@ import flora.exception.FloraException;
 import flora.storage.Storage;
 import flora.task.TaskList;
 import flora.task.Todo;
-import flora.ui.Ui;
 
 /**
  * Command to add a new todo task to the task list.
  */
 public class AddTodoCommand extends Command {
     private final String taskDesc;
+    private Todo todo;
+    private int size;
 
     /**
      * Constructs an AddTodoCommand with the given description.
@@ -25,10 +26,20 @@ public class AddTodoCommand extends Command {
      * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws FloraException {
-        Todo todo = new Todo(taskDesc);
+    public void execute(TaskList tasks, Storage storage) throws FloraException {
+        todo = new Todo(taskDesc);
         tasks.add(todo);
         storage.save(tasks);
-        ui.showAddedTask(todo, tasks.size());
+        size = tasks.size();
+        message = getMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMessage() {
+        return "Got it. I've added this task:\n  " + todo
+                + "\nNow you have " + size + " task" + (size > 1 ? "s" : "") + " in the list.";
     }
 }

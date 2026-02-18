@@ -6,7 +6,6 @@ import flora.exception.FloraException;
 import flora.storage.Storage;
 import flora.task.Deadline;
 import flora.task.TaskList;
-import flora.ui.Ui;
 
 /**
  * Command to add a new deadline task to the task list.
@@ -14,6 +13,8 @@ import flora.ui.Ui;
 public class AddDeadlineCommand extends Command {
     private final String taskDesc;
     private final LocalDateTime taskDue;
+    private Deadline deadline;
+    private int size;
 
     /**
      * Constructs an AddDeadlineCommand with the given description and due date.
@@ -30,10 +31,20 @@ public class AddDeadlineCommand extends Command {
      * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws FloraException {
-        Deadline deadline = new Deadline(taskDesc, taskDue);
+    public void execute(TaskList tasks, Storage storage) throws FloraException {
+        deadline = new Deadline(taskDesc, taskDue);
         tasks.add(deadline);
         storage.save(tasks);
-        ui.showAddedTask(deadline, tasks.size());
+        size = tasks.size();
+        message = getMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMessage() {
+        return "Got it. I've added this task:\n  " + deadline
+                + "\nNow you have " + size + " task" + (size > 1 ? "s" : "") + " in the list.";
     }
 }

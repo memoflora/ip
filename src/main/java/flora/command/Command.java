@@ -3,21 +3,30 @@ package flora.command;
 import flora.exception.FloraException;
 import flora.storage.Storage;
 import flora.task.TaskList;
-import flora.ui.Ui;
 
 /**
  * Represents an abstract command that can be executed by the chatbot.
  */
 public abstract class Command {
+    protected String message;
+
+    public abstract void execute(TaskList tasks, Storage storage) throws FloraException;
+
     /**
-     * Executes this command with the given task list, UI, and storage.
+     * Returns the message string to display in the GUI for this command.
      *
-     * @param tasks   The task list to operate on.
-     * @param ui      The UI to display output.
-     * @param storage The storage to persist changes.
-     * @throws FloraException If an error occurs during execution.
+     * @return The message string.
      */
-    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws FloraException;
+    public abstract String getMessage();
+
+    /**
+     * Returns the message to display in the GUI after executing this command.
+     *
+     * @return The message string.
+     */
+    public String getString() {
+        return message;
+    }
 
     /**
      * Returns whether this command causes the application to exit.

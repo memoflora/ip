@@ -4,13 +4,14 @@ import flora.exception.FloraException;
 import flora.storage.Storage;
 import flora.task.Task;
 import flora.task.TaskList;
-import flora.ui.Ui;
 
 /**
  * Command to mark a task as done.
  */
 public class MarkCommand extends Command {
     private final int taskIndex;
+    private Task task;
+    private boolean isMarked;
 
     /**
      * Constructs a MarkCommand with the given 1-based task index.
@@ -25,19 +26,31 @@ public class MarkCommand extends Command {
      * {@inheritDoc}
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws FloraException {
+    public void execute(TaskList tasks, Storage storage) throws FloraException {
         if (taskIndex < 1 || taskIndex > tasks.size()) {
             throw new FloraException("Bro's out of bounds");
         }
 
-        Task task = tasks.get(taskIndex);
-        if (task.isDone()) {
-            ui.showAlreadyMarked();
+        task = tasks.get(taskIndex);
+        isMarked = task.isDone();
+        if (isMarked) {
+            message = getMessage();
             return;
         }
 
         task.mark();
         storage.save(tasks);
-        ui.showMarkedTask(task);
+        message = getMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMessage() {
+        if (isMarked) {
+            return "That task is already marked bro";
+        }
+        return "Nice! I've marked this task as done:\n  " + task;
     }
 }
