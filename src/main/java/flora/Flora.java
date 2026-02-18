@@ -12,7 +12,7 @@ import flora.task.TaskList;
 public class Flora {
     private final Storage storage;
     private TaskList tasks;
-    private boolean exit = false;
+    private boolean shouldExit = false;
 
     /**
      * Constructs a Flora instance, loading tasks from the default storage file.
@@ -37,11 +37,11 @@ public class Flora {
     public String getResponse(String input) {
         assert input != null : "User input must not be null";
         try {
-            Command c = Parser.parse(input);
-            assert c != null : "Parser must return a non-null command";
-            c.execute(tasks, storage);
-            exit = c.isExit();
-            return c.getMessage();
+            Command command = Parser.parse(input);
+            assert command != null : "Parser must return a non-null command";
+            command.execute(tasks, storage);
+            shouldExit = command.isExit();
+            return command.getMessage();
         } catch (FloraException e) {
             return "Error: " + e.getMessage();
         }
@@ -62,7 +62,7 @@ public class Flora {
      * @return {@code true} if an exit command was executed, {@code false} otherwise.
      */
     public boolean isExit() {
-        return exit;
+        return shouldExit;
     }
 
     public static void main(String[] args) {

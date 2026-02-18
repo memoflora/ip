@@ -37,17 +37,17 @@ public class MainWindow extends AnchorPane {
     /**
      * Injects the Flora instance and displays the welcome message.
      *
-     * @param f The Flora instance to use for handling user input.
+     * @param flora The Flora instance to use for handling user input.
      */
-    public void setFlora(Flora f) {
-        flora = f;
+    public void setFlora(Flora flora) {
+        this.flora = flora;
         dialogContainer.getChildren().add(
-                DialogBox.getDukeDialog(flora.getWelcomeMessage(), floraImage)
+                DialogBox.getFloraDialog(this.flora.getWelcomeMessage(), floraImage)
         );
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Duke's reply and then appends them to
+     * Creates two dialog boxes, one echoing user input and the other containing Flora's reply and then appends them to
      * the dialog container. Clears the user input after processing.
      */
     @FXML
@@ -56,7 +56,7 @@ public class MainWindow extends AnchorPane {
         String response = flora.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, floraImage)
+                DialogBox.getFloraDialog(response, floraImage)
         );
         userInput.clear();
         if (flora.isExit()) {
