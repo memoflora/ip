@@ -171,10 +171,10 @@ public class Parser {
      * @return A random error message string.
      */
     private static String getInvalidCommandMessage() {
-        String[] strings = {"I guess bro", "Whatever that means"};
-        Random rand = new Random(System.currentTimeMillis());
-        int randomIndex = rand.nextInt(strings.length);
-        return strings[randomIndex];
+        String[] errorMessages = {"I guess bro", "Whatever that means"};
+        Random random = new Random(System.currentTimeMillis());
+        int randomIndex = random.nextInt(errorMessages.length);
+        return errorMessages[randomIndex];
     }
 
     /**

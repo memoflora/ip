@@ -5,7 +5,7 @@ package flora.task;
  */
 public abstract class Task {
     protected String description;
-    protected boolean isDone;
+    protected boolean done;
 
     /**
      * Constructs a Task with the given description, initially not done.
@@ -15,7 +15,7 @@ public abstract class Task {
     public Task(String description) {
         assert description != null && !description.isBlank() : "Task description must not be null or blank";
         this.description = description;
-        isDone = false;
+        done = false;
     }
 
     /**
@@ -33,23 +33,23 @@ public abstract class Task {
      * @return {@code true} if the task is done, {@code false} otherwise.
      */
     public boolean isDone() {
-        return isDone;
+        return done;
     }
 
     /**
      * Marks this task as done.
      */
     public void mark() {
-        isDone = true;
-        assert isDone : "Task should be marked as done after mark()";
+        done = true;
+        assert done : "Task should be marked as done after mark()";
     }
 
     /**
      * Marks this task as not done.
      */
     public void unmark() {
-        isDone = false;
-        assert !isDone : "Task should be unmarked after unmark()";
+        done = false;
+        assert !done : "Task should be unmarked after unmark()";
     }
 
     /**

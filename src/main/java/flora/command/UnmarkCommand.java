@@ -11,7 +11,7 @@ import flora.task.TaskList;
 public class UnmarkCommand extends Command {
     private final int taskIndex;
     private Task task;
-    private boolean isUnmarked;
+    private boolean wasAlreadyNotDone;
 
     /**
      * Constructs an UnmarkCommand with the given 1-based task index.
@@ -33,8 +33,8 @@ public class UnmarkCommand extends Command {
         }
 
         task = tasks.get(taskIndex);
-        isUnmarked = !task.isDone();
-        if (isUnmarked) {
+        wasAlreadyNotDone = !task.isDone();
+        if (wasAlreadyNotDone) {
             return;
         }
 
@@ -48,7 +48,7 @@ public class UnmarkCommand extends Command {
      */
     @Override
     public String getMessage() {
-        if (isUnmarked) {
+        if (wasAlreadyNotDone) {
             return "That task is already unmarked bro";
         }
         return "Ok, I've marked this task as not done yet:\n  " + task;

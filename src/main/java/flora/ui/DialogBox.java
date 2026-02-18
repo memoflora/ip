@@ -48,9 +48,9 @@ public class DialogBox extends HBox {
      * Flips the dialog box such that the ImageView is on the left and text on the right.
      */
     private void flip() {
-        ObservableList<Node> tmp = FXCollections.observableArrayList(this.getChildren());
-        Collections.reverse(tmp);
-        getChildren().setAll(tmp);
+        ObservableList<Node> reversedChildren = FXCollections.observableArrayList(this.getChildren());
+        Collections.reverse(reversedChildren);
+        getChildren().setAll(reversedChildren);
         setAlignment(Pos.TOP_LEFT);
         dialog.getStyleClass().add("reply-label");
     }
@@ -73,7 +73,7 @@ public class DialogBox extends HBox {
      * @param img  Flora's profile image.
      * @return A new flipped DialogBox for Flora.
      */
-    public static DialogBox getDukeDialog(String text, Image img) {
+    public static DialogBox getFloraDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();
         return db;

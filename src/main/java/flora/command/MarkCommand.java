@@ -11,7 +11,7 @@ import flora.task.TaskList;
 public class MarkCommand extends Command {
     private final int taskIndex;
     private Task task;
-    private boolean isMarked;
+    private boolean wasAlreadyDone;
 
     /**
      * Constructs a MarkCommand with the given 1-based task index.
@@ -33,8 +33,8 @@ public class MarkCommand extends Command {
         }
 
         task = tasks.get(taskIndex);
-        isMarked = task.isDone();
-        if (isMarked) {
+        wasAlreadyDone = task.isDone();
+        if (wasAlreadyDone) {
             return;
         }
 
@@ -48,7 +48,7 @@ public class MarkCommand extends Command {
      */
     @Override
     public String getMessage() {
-        if (isMarked) {
+        if (wasAlreadyDone) {
             return "That task is already marked bro";
         }
         return "Nice! I've marked this task as done:\n  " + task;
