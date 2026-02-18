@@ -3,6 +3,8 @@ package flora.task;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents a list of tasks with operations to add, remove, find, and access tasks.
@@ -66,17 +68,20 @@ public class TaskList implements Iterable<Task> {
      * @return A new TaskList containing the matching tasks.
      */
     public TaskList find(String keyword) {
-        TaskList matches = new TaskList();
-        for (Task task : tasks) {
-            String taskDesc = task.getDescription().toLowerCase();
-            keyword = keyword.toLowerCase();
+        String lowerKeyword = keyword.toLowerCase();
+        List<Task> matches = tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
+        return new TaskList(matches);
+    }
 
-            if (taskDesc.contains(keyword)) {
-                matches.add(task);
-            }
-        }
-
-        return matches;
+    /**
+     * Returns a sequential stream over the tasks in this list.
+     *
+     * @return A stream of tasks.
+     */
+    public Stream<Task> stream() {
+        return tasks.stream();
     }
 
     /**

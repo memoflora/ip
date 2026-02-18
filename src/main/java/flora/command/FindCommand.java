@@ -1,5 +1,8 @@
 package flora.command;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import flora.storage.Storage;
 import flora.task.TaskList;
 
@@ -37,10 +40,9 @@ public class FindCommand extends Command {
         if (matchingTasks.size() == 0) {
             return "No matching tasks.";
         }
-        StringBuilder sb = new StringBuilder("Here are the matching tasks in your list: ");
-        for (int i = 1; i <= matchingTasks.size(); i++) {
-            sb.append("\n").append(i).append(".").append(matchingTasks.get(i));
-        }
-        return sb.toString();
+        String items = IntStream.rangeClosed(1, matchingTasks.size())
+                .mapToObj(i -> "\n" + i + "." + matchingTasks.get(i))
+                .collect(Collectors.joining());
+        return "Here are the matching tasks in your list: " + items;
     }
 }

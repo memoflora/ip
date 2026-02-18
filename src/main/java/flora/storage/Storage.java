@@ -1,8 +1,8 @@
 package flora.storage;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import flora.exception.FloraException;
 import flora.task.Deadline;
@@ -117,13 +118,10 @@ public class Storage {
         assert tasks != null : "TaskList to save must not be null";
         try {
             Files.createDirectories(filePath.getParent());
-
-            try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
-                for (Task task : tasks) {
-                    writer.write(task.toFileString());
-                    writer.newLine();
-                }
-            }
+            List<String> lines = tasks.stream()
+                    .map(Task::toFileString)
+                    .collect(Collectors.toList());
+            Files.write(filePath, lines, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new FloraException("Failed saving to storage: " + e.getMessage());
         }

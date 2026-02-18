@@ -1,5 +1,8 @@
 package flora.command;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import flora.storage.Storage;
 import flora.task.TaskList;
 
@@ -25,10 +28,9 @@ public class ListCommand extends Command {
         if (taskList.size() == 0) {
             return "Your list is empty.";
         }
-        StringBuilder sb = new StringBuilder("Here are the tasks in your list: ");
-        for (int i = 1; i <= taskList.size(); i++) {
-            sb.append("\n").append(i).append(".").append(taskList.get(i));
-        }
-        return sb.toString();
+        String items = IntStream.rangeClosed(1, taskList.size())
+                .mapToObj(i -> "\n" + i + "." + taskList.get(i))
+                .collect(Collectors.joining());
+        return "Here are the tasks in your list: " + items;
     }
 }
