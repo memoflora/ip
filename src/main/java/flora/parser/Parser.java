@@ -12,6 +12,7 @@ import flora.command.AddEventCommand;
 import flora.command.AddTodoCommand;
 import flora.command.Command;
 import flora.command.DeleteCommand;
+import flora.command.EditCommand;
 import flora.command.ExitCommand;
 import flora.command.FindCommand;
 import flora.command.ListCommand;
@@ -45,6 +46,7 @@ public class Parser {
         case "deadline" -> parseDeadline(input, firstSpaceIndex);
         case "event" -> parseEvent(input, firstSpaceIndex);
         case "find" -> parseFind(input, firstSpaceIndex);
+        case "edit" -> parseEdit(input, firstSpaceIndex);
         case "delete" -> new DeleteCommand(getTaskIndex(input, firstSpaceIndex));
         case "mark" -> new MarkCommand(getTaskIndex(input, firstSpaceIndex));
         case "unmark" -> new UnmarkCommand(getTaskIndex(input, firstSpaceIndex));
@@ -98,13 +100,7 @@ public class Parser {
         assert !taskDesc.isBlank() : "Deadline description must not be blank";
         assert !taskDueStr.isBlank() : "Deadline due date string must not be blank";
 
-        LocalDateTime taskDue = switch (taskDueStr.toLowerCase()) {
-        case "today", "tonight" -> LocalDate.now().atTime(LocalTime.MAX);
-        case "tomorrow" -> LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
-        case "next week" -> LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
-        case "next month" -> LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
-        default -> parseDateTime(taskDueStr, "due date/time");
-        };
+        LocalDateTime taskDue = parseDueDateTime(taskDueStr);
 
         return new AddDeadlineCommand(taskDesc, taskDue);
     }
@@ -166,6 +162,91 @@ public class Parser {
     }
 
     /**
+     * Parses an edit command from the user input.
+     * Syntax: {@code edit <index> [/desc <newDesc>] [/by <newDue>] [/from <newStart>] [/to <newEnd>]}
+     * At least one field must be provided. Fields irrelevant to the task type are rejected at execution.
+     *
+     * @param input           The raw user input string.
+     * @param firstSpaceIndex The index of the first space in the input.
+     * @return The parsed {@code EditCommand}.
+     * @throws FloraException If the index is missing/invalid or no fields are provided.
+     */
+    private static Command parseEdit(String input, int firstSpaceIndex) throws FloraException {
+        if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
+            throw new FloraException("At least put an index bro");
+        }
+
+        String afterCommand = input.substring(firstSpaceIndex + 1);
+        int nextSpaceIndex = afterCommand.indexOf(" ");
+
+        String indexStr = nextSpaceIndex == -1 ? afterCommand : afterCommand.substring(0, nextSpaceIndex);
+        String fields = nextSpaceIndex == -1 ? "" : afterCommand.substring(nextSpaceIndex + 1);
+
+        int taskIndex;
+        try {
+            taskIndex = Integer.parseInt(indexStr);
+        } catch (NumberFormatException e) {
+            throw new FloraException("Invalid task index: " + indexStr);
+        }
+
+        if (taskIndex <= 0) {
+            throw new FloraException("Invalid task index: " + taskIndex);
+        }
+
+        String newDesc = extractField(fields, "/desc");
+        String byStr = extractField(fields, "/by");
+        String fromStr = extractField(fields, "/from");
+        String toStr = extractField(fields, "/to");
+
+        if (newDesc == null && byStr == null && fromStr == null && toStr == null) {
+            throw new FloraException("At least change something bro. "
+                    + "Use /desc, /by, /from, or /to.");
+        }
+
+        LocalDateTime newDue = byStr != null ? parseDueDateTime(byStr) : null;
+        LocalDateTime newStart = fromStr != null ? parseDateTime(fromStr, "start date/time") : null;
+        LocalDateTime newEnd = toStr != null ? parseDateTime(toStr, "end date/time") : null;
+
+        return new EditCommand(taskIndex, newDesc, newDue, newStart, newEnd);
+    }
+
+    /**
+     * Extracts the value following a field marker (e.g., "/desc") within a string.
+     * The value spans from after the marker to the start of the next marker or end of string.
+     *
+     * @param input  The string to search within (the portion after the task index).
+     * @param marker The field marker to locate (e.g., "/desc", "/by").
+     * @return The trimmed value after the marker, or {@code null} if the marker is absent
+     *         or its value is blank.
+     */
+    private static String extractField(String input, String marker) {
+        int markerIndex = input.indexOf(marker);
+        if (markerIndex == -1) {
+            return null;
+        }
+
+        int valueStart = markerIndex + marker.length();
+        if (valueStart >= input.length()) {
+            return null;
+        }
+
+        String[] allMarkers = {"/desc", "/by", "/from", "/to"};
+        int valueEnd = input.length();
+        for (String m : allMarkers) {
+            if (m.equals(marker)) {
+                continue;
+            }
+            int mIndex = input.indexOf(m, valueStart);
+            if (mIndex != -1 && mIndex < valueEnd) {
+                valueEnd = mIndex;
+            }
+        }
+
+        String value = input.substring(valueStart, valueEnd).trim();
+        return value.isBlank() ? null : value;
+    }
+
+    /**
      * Returns a randomly selected error message for invalid commands.
      *
      * @return A random error message string.
@@ -175,6 +256,25 @@ public class Parser {
         Random random = new Random(System.currentTimeMillis());
         int randomIndex = random.nextInt(errorMessages.length);
         return errorMessages[randomIndex];
+    }
+
+    /**
+     * Parses a due date string, supporting natural language shortcuts
+     * ("today", "tonight", "tomorrow", "next week", "next month") as well as
+     * explicit date/time strings.
+     *
+     * @param dateStr The due date string to parse.
+     * @return The parsed LocalDateTime.
+     * @throws FloraException If the string is not a recognised shortcut and cannot be parsed.
+     */
+    private static LocalDateTime parseDueDateTime(String dateStr) throws FloraException {
+        return switch (dateStr.toLowerCase()) {
+        case "today", "tonight" -> LocalDate.now().atTime(LocalTime.MAX);
+        case "tomorrow" -> LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
+        case "next week" -> LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
+        case "next month" -> LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
+        default -> parseDateTime(dateStr, "due date/time");
+        };
     }
 
     /**

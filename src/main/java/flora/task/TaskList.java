@@ -62,6 +62,18 @@ public class TaskList implements Iterable<Task> {
     }
 
     /**
+     * Replaces the task at the given 1-based index with the provided task.
+     *
+     * @param index The 1-based index of the task to replace.
+     * @param task  The new task to place at that index.
+     */
+    public void set(int index, Task task) {
+        assert index >= 1 && index <= tasks.size() : "Task index out of bounds: " + index;
+        assert task != null : "Cannot set a null task";
+        tasks.set(index - 1, task);
+    }
+
+    /**
      * Finds all tasks whose descriptions contain the given keyword (case-insensitive).
      *
      * @param keyword The keyword to search for.

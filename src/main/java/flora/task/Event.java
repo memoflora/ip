@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import flora.exception.FloraException;
+
 /**
  * Represents a task that spans a time period with a start and end date/time.
  */
@@ -60,11 +65,56 @@ public class Event extends Task {
     }
 
     /**
+     * Returns the start date/time of this event.
+     *
+     * @return The start date/time.
+     */
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    /**
+     * Returns the end date/time of this event.
+     *
+     * @return The end date/time.
+     */
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     protected String getType() {
         return "E";
+    }
+
+    /**
+     * {@inheritDoc}
+     * Events support /desc, /from, and /to. The deadline-only field /by is
+     * collected as invalid and ignored, but valid fields are still applied.
+     *
+     * @throws FloraException If the resulting start time is after the end time.
+     */
+    @Override
+    public EditResult edit(String newDesc, LocalDateTime newDue,
+            LocalDateTime newStart, LocalDateTime newEnd) throws FloraException {
+        List<String> invalid = new ArrayList<>();
+        if (newDue != null) {
+            invalid.add("/by");
+        }
+        String desc = newDesc != null ? newDesc : description;
+        LocalDateTime updatedStart = newStart != null ? newStart : this.start;
+        LocalDateTime updatedEnd = newEnd != null ? newEnd : this.end;
+        if (updatedStart.isAfter(updatedEnd)) {
+            throw new FloraException("Start time cannot be after end time.");
+        }
+        Event updated = new Event(desc, updatedStart, updatedEnd);
+        if (done) {
+            updated.mark();
+        }
+        return new EditResult(updated, invalid);
     }
 
     /**
