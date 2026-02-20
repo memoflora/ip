@@ -137,8 +137,8 @@ public class Parser {
         assert !taskStartStr.isBlank() : "Event start date string must not be blank";
         assert !taskEndStr.isBlank() : "Event end date string must not be blank";
 
-        LocalDateTime taskStart = parseDateTime(taskStartStr, "start date/time");
-        LocalDateTime taskEnd = parseDateTime(taskEndStr, "end date/time");
+        LocalDateTime taskStart = parseDateTime(taskStartStr, "start date/time", LocalTime.MIDNIGHT);
+        LocalDateTime taskEnd = parseDateTime(taskEndStr, "end date/time", LocalTime.MAX);
 
         return new AddEventCommand(taskDesc, taskStart, taskEnd);
     }
@@ -204,8 +204,8 @@ public class Parser {
         }
 
         LocalDateTime newDue = byStr != null ? parseDueDateTime(byStr) : null;
-        LocalDateTime newStart = fromStr != null ? parseDateTime(fromStr, "start date/time") : null;
-        LocalDateTime newEnd = toStr != null ? parseDateTime(toStr, "end date/time") : null;
+        LocalDateTime newStart = fromStr != null ? parseDateTime(fromStr, "start date/time", LocalTime.MIDNIGHT) : null;
+        LocalDateTime newEnd = toStr != null ? parseDateTime(toStr, "end date/time", LocalTime.MAX) : null;
 
         return new EditCommand(taskIndex, newDesc, newDue, newStart, newEnd);
     }
@@ -275,6 +275,29 @@ public class Parser {
         case "next month" -> LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
         default -> parseDateTime(dateStr, "due date/time");
         };
+    }
+
+    /**
+     * Parses a date/time string into a LocalDateTime.
+     * If no time component is provided, {@code defaultTime} is used.
+     *
+     * @param dateStr     The date/time string to parse.
+     * @param fieldName   The name of the field, used in error messages.
+     * @param defaultTime The time to use when only a date is given.
+     * @return The parsed LocalDateTime.
+     * @throws FloraException If the string cannot be parsed.
+     */
+    private static LocalDateTime parseDateTime(String dateStr, String fieldName,
+            LocalTime defaultTime) throws FloraException {
+        try {
+            return LocalDateTime.parse(dateStr, DATE_TIME_FMT);
+        } catch (DateTimeParseException e) {
+            try {
+                return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("d/M/yyyy")).atTime(defaultTime);
+            } catch (DateTimeParseException e2) {
+                throw new FloraException("Invalid " + fieldName + ": " + dateStr);
+            }
+        }
     }
 
     /**
