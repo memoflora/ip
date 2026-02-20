@@ -56,15 +56,6 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns the due date/time of this deadline.
-     *
-     * @return The due date/time.
-     */
-    public LocalDateTime getDue() {
-        return due;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override

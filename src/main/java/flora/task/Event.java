@@ -65,24 +65,6 @@ public class Event extends Task {
     }
 
     /**
-     * Returns the start date/time of this event.
-     *
-     * @return The start date/time.
-     */
-    public LocalDateTime getStart() {
-        return start;
-    }
-
-    /**
-     * Returns the end date/time of this event.
-     *
-     * @return The end date/time.
-     */
-    public LocalDateTime getEnd() {
-        return end;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override

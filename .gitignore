@@ -16,5 +16,8 @@ bin/
 # Java classes
 *.class
 
+# Data files
+/data/
+
 # Claude settings
 .claude
