@@ -530,15 +530,15 @@ public class FloraTest {
 
     @Test
     public void parseEvent_noFrom_throwsException() {
-        FloraException ex = assertThrows(FloraException.class,
-                () -> Parser.parse("event meeting /to 6/8/2024 16:00"));
+        FloraException ex = assertThrows(FloraException.class, () ->
+                Parser.parse("event meeting /to 6/8/2024 16:00"));
         assertEquals("At least set a start time bro", ex.getMessage());
     }
 
     @Test
     public void parseEvent_noTo_throwsException() {
-        FloraException ex = assertThrows(FloraException.class,
-                () -> Parser.parse("event meeting /from 6/8/2024"));
+        FloraException ex = assertThrows(FloraException.class, () ->
+                Parser.parse("event meeting /from 6/8/2024"));
         assertEquals("At least set an end time bro", ex.getMessage());
     }
 
@@ -788,27 +788,27 @@ public class FloraTest {
     }
 
     @Test
-    public void storage_parseTask_missingDueDateForDeadline_throwsException() {
+    public void storageParseTask_missingDueDateDeadline_throwsException() {
         // Only 3 fields; deadline needs 4
         assertThrows(FloraException.class, () -> Storage.parseTask("D | 0 | submit report"));
     }
 
     @Test
-    public void storage_parseTask_missingDatesForEvent_throwsException() {
+    public void storageParseTask_missingDatesForEvent_throwsException() {
         // Only 4 fields; event needs 5
         assertThrows(FloraException.class, () ->
                 Storage.parseTask("E | 0 | meeting | 06/08/2024 14:00"));
     }
 
     @Test
-    public void storage_parseTask_nonExistentDateInDeadline_throwsException() {
+    public void storageParseTask_nonExistentDateDeadline_throwsException() {
         // Feb 30 doesn't exist
         assertThrows(FloraException.class, () ->
                 Storage.parseTask("D | 0 | task | 30/02/2026 14:00"));
     }
 
     @Test
-    public void storage_parseTask_nonExistentDateInEvent_throwsException() {
+    public void storageParseTask_nonExistentDateEvent_throwsException() {
         assertThrows(FloraException.class, () ->
                 Storage.parseTask("E | 0 | fair | 30/02/2026 10:00 | 01/03/2026 10:00"));
     }
@@ -877,7 +877,7 @@ public class FloraTest {
     }
 
     @Test
-    public void addTodoCommand_execute_duplicate_throwsException() throws FloraException {
+    public void addTodoCommand_executeDuplicate_throwsException() throws FloraException {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("buy milk"));
         AddTodoCommand cmd = new AddTodoCommand("buy milk");
@@ -918,7 +918,7 @@ public class FloraTest {
     }
 
     @Test
-    public void addDeadlineCommand_execute_duplicate_throwsException() throws FloraException {
+    public void addDeadlineCommand_executeDuplicate_throwsException() throws FloraException {
         LocalDateTime due = LocalDateTime.of(2024, 12, 1, 18, 0);
         TaskList tasks = new TaskList();
         tasks.add(new Deadline("submit", due));
@@ -927,7 +927,7 @@ public class FloraTest {
     }
 
     @Test
-    public void addDeadlineCommand_execute_samDescDifferentDue_notDuplicate() throws FloraException {
+    public void addDeadlineCommand_samDescDifferentDue_notDuplicate() throws FloraException {
         LocalDateTime due1 = LocalDateTime.of(2024, 12, 1, 18, 0);
         LocalDateTime due2 = LocalDateTime.of(2024, 12, 2, 18, 0);
         TaskList tasks = new TaskList();
@@ -950,14 +950,14 @@ public class FloraTest {
     }
 
     @Test
-    public void addEventCommand_execute_startEqualsEnd_throwsException() {
+    public void addEventCommand_startEqualsEnd_throwsException() {
         LocalDateTime t = LocalDateTime.of(2024, 8, 6, 14, 0);
         AddEventCommand cmd = new AddEventCommand("meeting", t, t);
         assertThrows(FloraException.class, () -> cmd.execute(new TaskList(), tempStorage()));
     }
 
     @Test
-    public void addEventCommand_execute_startAfterEnd_throwsException() {
+    public void addEventCommand_startAfterEnd_throwsException() {
         LocalDateTime start = LocalDateTime.of(2024, 8, 6, 16, 0);
         LocalDateTime end = LocalDateTime.of(2024, 8, 6, 14, 0);
         AddEventCommand cmd = new AddEventCommand("meeting", start, end);
@@ -965,7 +965,7 @@ public class FloraTest {
     }
 
     @Test
-    public void addEventCommand_execute_duplicate_throwsException() throws FloraException {
+    public void addEventCommand_executeDuplicate_throwsException() throws FloraException {
         LocalDateTime start = LocalDateTime.of(2024, 8, 6, 14, 0);
         LocalDateTime end = LocalDateTime.of(2024, 8, 6, 16, 0);
         TaskList tasks = new TaskList();
@@ -988,14 +988,14 @@ public class FloraTest {
     }
 
     @Test
-    public void deleteCommand_execute_emptyList_throwsException() {
+    public void deleteCommand_emptyList_throwsException() {
         TaskList tasks = new TaskList();
         DeleteCommand cmd = new DeleteCommand(1);
         assertThrows(FloraException.class, () -> cmd.execute(tasks, tempStorage()));
     }
 
     @Test
-    public void deleteCommand_execute_indexTooHigh_throwsException() {
+    public void deleteCommand_indexTooHigh_throwsException() {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("only task"));
         DeleteCommand cmd = new DeleteCommand(2);
@@ -1025,7 +1025,7 @@ public class FloraTest {
     }
 
     @Test
-    public void markCommand_execute_alreadyMarked_returnsInfoMessage() throws FloraException {
+    public void markCommand_alreadyMarked_returnsInfoMessage() throws FloraException {
         TaskList tasks = new TaskList();
         Todo task = new Todo("buy milk");
         task.mark();
@@ -1036,7 +1036,7 @@ public class FloraTest {
     }
 
     @Test
-    public void markCommand_execute_indexTooHigh_throwsException() {
+    public void markCommand_indexTooHigh_throwsException() {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("only task"));
         MarkCommand cmd = new MarkCommand(2);
@@ -1066,7 +1066,7 @@ public class FloraTest {
     }
 
     @Test
-    public void unmarkCommand_execute_alreadyUnmarked_returnsInfoMessage() throws FloraException {
+    public void unmarkCommand_alreadyUnmarked_returnsInfoMessage() throws FloraException {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("buy milk")); // Not marked by default
         UnmarkCommand cmd = new UnmarkCommand(1);
@@ -1075,7 +1075,7 @@ public class FloraTest {
     }
 
     @Test
-    public void unmarkCommand_execute_indexTooHigh_throwsException() {
+    public void unmarkCommand_indexTooHigh_throwsException() {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("only task"));
         UnmarkCommand cmd = new UnmarkCommand(2);
@@ -1105,7 +1105,7 @@ public class FloraTest {
     }
 
     @Test
-    public void editCommand_execute_indexTooHigh_throwsException() {
+    public void editCommand_indexTooHigh_throwsException() {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("only task"));
         EditCommand cmd = new EditCommand(2, "new desc", null, null, null);
@@ -1113,7 +1113,7 @@ public class FloraTest {
     }
 
     @Test
-    public void editCommand_execute_wouldCreateDuplicate_throwsException() {
+    public void editCommand_wouldCreateDuplicate_throwsException() {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("buy milk"));
         tasks.add(new Todo("buy groceries"));
@@ -1123,7 +1123,7 @@ public class FloraTest {
     }
 
     @Test
-    public void editCommand_execute_editingToSameValues_notConsideredDuplicate() {
+    public void editCommand_sameValues_notConsideredDuplicate() {
         // Editing task to its current description should not raise a duplicate error
         TaskList tasks = new TaskList();
         tasks.add(new Todo("buy milk"));
@@ -1159,7 +1159,7 @@ public class FloraTest {
     }
 
     @Test
-    public void findCommand_execute_noMatches_returnsNoMatchMessage() throws FloraException {
+    public void findCommand_noMatches_returnsNoMatchMessage() throws FloraException {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("buy milk"));
         FindCommand cmd = new FindCommand("xyz");
@@ -1179,7 +1179,7 @@ public class FloraTest {
     // ==================== Command: ListCommand ====================
 
     @Test
-    public void listCommand_execute_emptyList_returnsEmptyMessage() throws FloraException {
+    public void listCommand_emptyList_returnsEmptyMessage() throws FloraException {
         TaskList tasks = new TaskList();
         ListCommand cmd = new ListCommand();
         cmd.execute(tasks, null);
@@ -1187,7 +1187,7 @@ public class FloraTest {
     }
 
     @Test
-    public void listCommand_execute_withTasks_showsAllTasks() throws FloraException {
+    public void listCommand_withTasks_showsAllTasks() throws FloraException {
         TaskList tasks = new TaskList();
         tasks.add(new Todo("task one"));
         tasks.add(new Todo("task two"));
