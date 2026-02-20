@@ -54,9 +54,13 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText();
         String response = flora.getResponse(input);
+        boolean isError = response.startsWith("Error: ");
+        DialogBox floraBox = isError
+                ? DialogBox.getFloraErrorDialog(response, floraImage)
+                : DialogBox.getFloraDialog(response, floraImage);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getFloraDialog(response, floraImage)
+                floraBox
         );
         userInput.clear();
         if (flora.isExit()) {

@@ -1,26 +1,41 @@
 .root {
-    main-color: rgb(102, 0, 51);       /* Create a looked-up color called "main-color" within root. */
+    main-color: #660033;
     -fx-background-color: main-color;
 }
 
 .text-field {
-    -fx-background-color: #d9ffe2;
-    -fx-font: 20px "Arial";
+    -fx-background-color: #4a0020;
+    -fx-text-fill: #f2dde3;
+    -fx-prompt-text-fill: #9c6070;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-background-radius: 4px;
+    -fx-border-color: #7a2a45;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.text-field:focused {
+    -fx-border-color: #cc5577;
+    -fx-border-width: 1px;
 }
 
 .button {
-    -fx-background-color: mediumspringgreen;
-    -fx-font: italic bold 16px "Arial";
+    -fx-background-color: #f5e0e8;
+    -fx-text-fill: #3d0019;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
 }
 
 .button:hover {
-    -fx-background-color:cyan;
-    -fx-font-size: 18px;
+    -fx-background-color: #ffd0e0;
 }
 
 .button:pressed {
-    -fx-background-color:orange;
-    -fx-font-size: 20px;
+    -fx-background-color: #f0b8cc;
 }
 
 .scroll-pane,
@@ -29,12 +44,12 @@
 }
 
 .scroll-bar {
-    -fx-font-size: 10px;  /* Change width of scroll bar. */
-    -fx-background-color: main-color;
+    -fx-pref-width: 8px;
+    -fx-background-color: transparent;
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: #ff9cb4;
+    -fx-background-color: #7a2a45;
     -fx-background-radius: 1em;
 }
 

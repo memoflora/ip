@@ -56,10 +56,11 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Creates a dialog box for the user's message.
+     * Creates a dialog box for the user's message. The profile picture is hidden
+     * to give a clean, asymmetric chat appearance.
      *
      * @param text The user's message text.
-     * @param img  The user's profile image.
+     * @param img  The user's profile image (not displayed).
      * @return A new DialogBox for the user.
      */
     public static DialogBox getUserDialog(String text, Image img) {
@@ -76,6 +77,20 @@ public class DialogBox extends HBox {
     public static DialogBox getFloraDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();
+        return db;
+    }
+
+    /**
+     * Creates an error dialog box for Flora's error responses, styled to catch the user's attention.
+     *
+     * @param text The error message text.
+     * @param img  Flora's profile image.
+     * @return A new flipped DialogBox styled as an error.
+     */
+    public static DialogBox getFloraErrorDialog(String text, Image img) {
+        var db = new DialogBox(text, img);
+        db.flip();
+        db.dialog.getStyleClass().add("error-label");
         return db;
     }
 }
