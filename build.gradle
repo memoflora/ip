@@ -48,7 +48,11 @@ application {
 }
 
 checkstyle {
-    toolVersion = '13.2.0'
+    toolVersion = '10.12.7'
+}
+
+configurations.checkstyle {
+    exclude group: 'com.google.collections', module: 'google-collections'
 }
 
 shadowJar {

@@ -67,7 +67,7 @@ public class EditCommand extends Command {
         StringBuilder msg = new StringBuilder("Got it, I've updated the task:\n  ").append(updatedTask);
         if (editResult.hasInvalidFields()) {
             msg.append("\nIgnored (not applicable to this task type): ")
-               .append(String.join(", ", editResult.invalidFields()));
+                .append(String.join(", ", editResult.invalidFields()));
         }
         return msg.toString();
     }
