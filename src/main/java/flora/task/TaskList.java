@@ -97,7 +97,7 @@ public class TaskList implements Iterable<Task> {
     public boolean containsTaskWithDetailsExcluding(Task candidate, int excludeIndex) {
         String key = candidate.getDetailsKey();
         for (int i = 1; i <= tasks.size(); i++) {
-            if (i != excludeIndex && tasks.get(i).getDetailsKey().equals(key)) {
+            if (i != excludeIndex && tasks.get(i - 1).getDetailsKey().equals(key)) {
                 return true;
             }
         }
