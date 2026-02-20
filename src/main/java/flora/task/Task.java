@@ -63,6 +63,14 @@ public abstract class Task {
     protected abstract String getType();
 
     /**
+     * Returns a key that uniquely identifies the task's content (type, description, and dates).
+     * Used to detect duplicate tasks regardless of completion status.
+     *
+     * @return A string key encoding this task's content.
+     */
+    public abstract String getDetailsKey();
+
+    /**
      * Returns a new task of the same type with the specified fields updated.
      * Pass {@code null} for any field to keep its current value.
      * Fields that don't apply to this task type are collected in the result's

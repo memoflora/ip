@@ -6,8 +6,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +27,10 @@ import flora.task.Todo;
  * Handles loading and saving tasks to a file on disk.
  */
 public class Storage {
-    private static final DateTimeFormatter DATE_TIME_FILE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy[ HH:mm]");
+    private static final DateTimeFormatter DATE_TIME_FILE_FMT =
+            DateTimeFormatter.ofPattern("dd/MM/uuuu HH:mm").withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter DATE_ONLY_FILE_FMT =
+            DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT);
     private final Path filePath;
 
     /**
@@ -58,15 +65,21 @@ public class Storage {
             task = new Todo(description);
             break;
         case "D":
+            if (parts.length < 4) {
+                throw new FloraException("Missing due date for deadline task");
+            }
             String dueStr = parts[3];
-            LocalDateTime due = LocalDateTime.parse(dueStr, DATE_TIME_FILE_FMT);
+            LocalDateTime due = parseFileDateTime(dueStr);
             task = new Deadline(description, due);
             break;
         case "E":
+            if (parts.length < 5) {
+                throw new FloraException("Missing start or end date for event task");
+            }
             String startStr = parts[3];
             String endStr = parts[4];
-            LocalDateTime start = LocalDateTime.parse(startStr, DATE_TIME_FILE_FMT);
-            LocalDateTime end = LocalDateTime.parse(endStr, DATE_TIME_FILE_FMT);
+            LocalDateTime start = parseFileDateTime(startStr);
+            LocalDateTime end = parseFileDateTime(endStr);
             task = new Event(description, start, end);
             break;
         default:
@@ -78,6 +91,26 @@ public class Storage {
         }
 
         return task;
+    }
+
+    /**
+     * Parses a date/time string from the storage file into a LocalDateTime.
+     * Accepts both "dd/MM/uuuu HH:mm" (with time) and "dd/MM/uuuu" (date-only, defaults to midnight).
+     *
+     * @param dateStr The date/time string from the file.
+     * @return The parsed LocalDateTime.
+     * @throws FloraException If the string cannot be parsed or represents a non-existent date.
+     */
+    private static LocalDateTime parseFileDateTime(String dateStr) throws FloraException {
+        try {
+            return LocalDateTime.parse(dateStr, DATE_TIME_FILE_FMT);
+        } catch (DateTimeParseException e) {
+            try {
+                return LocalDate.parse(dateStr, DATE_ONLY_FILE_FMT).atTime(LocalTime.MIDNIGHT);
+            } catch (DateTimeParseException e2) {
+                throw new FloraException("Invalid date/time in storage: " + dateStr);
+            }
+        }
     }
 
     /**

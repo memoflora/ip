@@ -91,6 +91,14 @@ public class Deadline extends Task {
      * {@inheritDoc}
      */
     @Override
+    public String getDetailsKey() {
+        return "D|" + description + "|" + due.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toFileString() {
         return super.toFileString() + " | " + convertDateTimeToFileString(due);
     }

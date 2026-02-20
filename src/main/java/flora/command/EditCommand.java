@@ -52,6 +52,9 @@ public class EditCommand extends Command {
         Task old = tasks.get(taskIndex);
         editResult = old.edit(newDesc, newDue, newStart, newEnd);
         updatedTask = editResult.task();
+        if (tasks.containsTaskWithDetailsExcluding(updatedTask, taskIndex)) {
+            throw new FloraException("The updated task would be a duplicate of an existing task.");
+        }
         tasks.set(taskIndex, updatedTask);
         storage.save(tasks);
     }

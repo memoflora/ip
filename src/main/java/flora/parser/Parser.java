@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Random;
 
 import flora.command.AddDeadlineCommand;
@@ -24,7 +25,10 @@ import flora.exception.FloraException;
  * Parses user input into executable commands.
  */
 public class Parser {
-    private static final DateTimeFormatter DATE_TIME_FMT = DateTimeFormatter.ofPattern("d/M/yyyy[ H:mm]");
+    private static final DateTimeFormatter DATE_TIME_FMT =
+            DateTimeFormatter.ofPattern("d/M/uuuu H:mm").withResolverStyle(ResolverStyle.STRICT);
+    private static final DateTimeFormatter DATE_ONLY_FMT =
+            DateTimeFormatter.ofPattern("d/M/uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     /**
      * Parses the given user input string and returns the corresponding command.
@@ -140,6 +144,10 @@ public class Parser {
         LocalDateTime taskStart = parseDateTime(taskStartStr, "start date/time", LocalTime.MIDNIGHT);
         LocalDateTime taskEnd = parseDateTime(taskEndStr, "end date/time", LocalTime.MAX);
 
+        if (!taskStart.isBefore(taskEnd)) {
+            throw new FloraException("Start time must be before end time.");
+        }
+
         return new AddEventCommand(taskDesc, taskStart, taskEnd);
     }
 
@@ -207,6 +215,10 @@ public class Parser {
         LocalDateTime newStart = fromStr != null ? parseDateTime(fromStr, "start date/time", LocalTime.MIDNIGHT) : null;
         LocalDateTime newEnd = toStr != null ? parseDateTime(toStr, "end date/time", LocalTime.MAX) : null;
 
+        if (newStart != null && newEnd != null && !newStart.isBefore(newEnd)) {
+            throw new FloraException("Start time must be before end time.");
+        }
+
         return new EditCommand(taskIndex, newDesc, newDue, newStart, newEnd);
     }
 
@@ -273,7 +285,7 @@ public class Parser {
         case "tomorrow" -> LocalDate.now().plusDays(1).atTime(LocalTime.MAX);
         case "next week" -> LocalDate.now().plusWeeks(1).atTime(LocalTime.MAX);
         case "next month" -> LocalDate.now().plusMonths(1).atTime(LocalTime.MAX);
-        default -> parseDateTime(dateStr, "due date/time");
+        default -> parseDateTime(dateStr, "due date/time", LocalTime.MAX);
         };
     }
 
@@ -293,26 +305,10 @@ public class Parser {
             return LocalDateTime.parse(dateStr, DATE_TIME_FMT);
         } catch (DateTimeParseException e) {
             try {
-                return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("d/M/yyyy")).atTime(defaultTime);
+                return LocalDate.parse(dateStr, DATE_ONLY_FMT).atTime(defaultTime);
             } catch (DateTimeParseException e2) {
                 throw new FloraException("Invalid " + fieldName + ": " + dateStr);
             }
-        }
-    }
-
-    /**
-     * Parses a date/time string into a LocalDateTime.
-     *
-     * @param dateStr   The date/time string to parse.
-     * @param fieldName The name of the field, used in error messages.
-     * @return The parsed LocalDateTime.
-     * @throws FloraException If the string cannot be parsed.
-     */
-    private static LocalDateTime parseDateTime(String dateStr, String fieldName) throws FloraException {
-        try {
-            return LocalDateTime.parse(dateStr, DATE_TIME_FMT);
-        } catch (DateTimeParseException e) {
-            throw new FloraException("Invalid " + fieldName + ": " + dateStr);
         }
     }
 

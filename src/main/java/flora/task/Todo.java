@@ -54,6 +54,14 @@ public class Todo extends Task {
      * {@inheritDoc}
      */
     @Override
+    public String getDetailsKey() {
+        return "T|" + description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toFileString() {
         return super.toFileString();
     }

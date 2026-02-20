@@ -35,6 +35,9 @@ public class AddDeadlineCommand extends Command {
     @Override
     public void execute(TaskList tasks, Storage storage) throws FloraException {
         deadline = new Deadline(taskDesc, taskDue);
+        if (tasks.containsTaskWithDetails(deadline)) {
+            throw new FloraException("This task already exists: " + deadline);
+        }
         tasks.add(deadline);
         storage.save(tasks);
         size = tasks.size();

@@ -38,7 +38,13 @@ public class AddEventCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Storage storage) throws FloraException {
+        if (!taskStart.isBefore(taskEnd)) {
+            throw new FloraException("Start time must be before end time.");
+        }
         event = new Event(taskDesc, taskStart, taskEnd);
+        if (tasks.containsTaskWithDetails(event)) {
+            throw new FloraException("This task already exists: " + event);
+        }
         tasks.add(event);
         storage.save(tasks);
         size = tasks.size();

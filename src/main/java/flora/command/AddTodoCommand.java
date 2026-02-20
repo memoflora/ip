@@ -29,6 +29,9 @@ public class AddTodoCommand extends Command {
     @Override
     public void execute(TaskList tasks, Storage storage) throws FloraException {
         todo = new Todo(taskDesc);
+        if (tasks.containsTaskWithDetails(todo)) {
+            throw new FloraException("This task already exists: " + todo);
+        }
         tasks.add(todo);
         storage.save(tasks);
         size = tasks.size();

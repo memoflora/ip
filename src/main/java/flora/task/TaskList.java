@@ -74,6 +74,37 @@ public class TaskList implements Iterable<Task> {
     }
 
     /**
+     * Returns {@code true} if any task in the list has the same content (type, description,
+     * and dates) as the given candidate, regardless of completion status.
+     *
+     * @param candidate The task to check against.
+     * @return {@code true} if a task with identical details already exists.
+     */
+    public boolean containsTaskWithDetails(Task candidate) {
+        String key = candidate.getDetailsKey();
+        return tasks.stream().anyMatch(t -> t.getDetailsKey().equals(key));
+    }
+
+    /**
+     * Returns {@code true} if any task other than the one at {@code excludeIndex} has
+     * the same content as the given candidate. Used when editing a task to detect
+     * whether the result would duplicate another existing task.
+     *
+     * @param candidate    The updated task to check against.
+     * @param excludeIndex The 1-based index of the task being edited (excluded from search).
+     * @return {@code true} if a different task with identical details already exists.
+     */
+    public boolean containsTaskWithDetailsExcluding(Task candidate, int excludeIndex) {
+        String key = candidate.getDetailsKey();
+        for (int i = 1; i <= tasks.size(); i++) {
+            if (i != excludeIndex && tasks.get(i).getDetailsKey().equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Finds all tasks whose descriptions contain the given keyword (case-insensitive).
      *
      * @param keyword The keyword to search for.

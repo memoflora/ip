@@ -27,7 +27,7 @@ public class Event extends Task {
         super(description);
         assert start != null : "Event start time must not be null";
         assert end != null : "Event end time must not be null";
-        assert !start.isAfter(end) : "Event start time must not be after end time";
+        assert start.isBefore(end) : "Event start time must be before end time";
         this.start = start;
         this.end = end;
     }
@@ -89,14 +89,22 @@ public class Event extends Task {
         String desc = newDesc != null ? newDesc : description;
         LocalDateTime updatedStart = newStart != null ? newStart : this.start;
         LocalDateTime updatedEnd = newEnd != null ? newEnd : this.end;
-        if (updatedStart.isAfter(updatedEnd)) {
-            throw new FloraException("Start time cannot be after end time.");
+        if (!updatedStart.isBefore(updatedEnd)) {
+            throw new FloraException("Start time must be before end time.");
         }
         Event updated = new Event(desc, updatedStart, updatedEnd);
         if (done) {
             updated.mark();
         }
         return new EditResult(updated, invalid);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDetailsKey() {
+        return "E|" + description + "|" + start.toString() + "|" + end.toString();
     }
 
     /**
