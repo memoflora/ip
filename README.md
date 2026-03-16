@@ -1,26 +1,121 @@
-# Duke project template
+# Flora User Guide
 
-This is a project template for a greenfield Java project. It's named after the Java mascot _Duke_. Given below are instructions on how to use it.
+Flora is a desktop chatbot that helps you track your tasks. Type commands into the chat box and Flora will respond.
 
-## Setting up in Intellij
+![Flora screenshot](Ui.png)
 
-Prerequisites: JDK 17, update Intellij to the most recent version.
+---
 
-1. Open Intellij (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
-1. Open the project into Intellij as follows:
-   1. Click `Open`.
-   1. Select the project directory, and click `OK`.
-   1. If there are any further prompts, accept the defaults.
-1. Configure the project to use **JDK 17** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
-   In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/Duke.java` file, right-click it, and choose `Run Duke.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
-   ```
-   Hello from
-    ____        _        
-   |  _ \ _   _| | _____ 
-   | | | | | | | |/ / _ \
-   | |_| | |_| |   <  __/
-   |____/ \__,_|_|\_\___|
-   ```
+## Task types
 
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+| Symbol | Type     | Has dates?              |
+|--------|----------|-------------------------|
+| `[T]`  | Todo     | No                      |
+| `[D]`  | Deadline | Due date                |
+| `[E]`  | Event    | Start date and end date |
+
+A `[X]` in the second bracket means the task is done; `[ ]` means it isn't.
+
+---
+
+## Commands
+
+### Add a todo
+```
+todo <description>
+```
+```
+todo Read textbook
+```
+
+---
+
+### Add a deadline
+```
+deadline <description> /by <date>
+```
+```
+deadline Submit assignment /by 28/2/2026
+deadline Submit assignment /by 28/2/2026 23:59
+deadline Submit assignment /by tomorrow
+```
+**Date shortcuts:** `today`, `tonight`, `tomorrow`, `next week`, `next month`
+**Date format:** `d/M/yyyy` or `d/M/yyyy H:mm`
+
+---
+
+### Add an event
+```
+event <description> /from <start> /to <end>
+```
+```
+event Team meeting /from 20/2/2026 14:00 /to 20/2/2026 15:00
+```
+**Date format:** `d/M/yyyy` or `d/M/yyyy H:mm`
+
+---
+
+### List all tasks
+```
+list
+```
+
+---
+
+### Mark / unmark a task
+```
+mark <index>
+unmark <index>
+```
+```
+mark 2
+unmark 2
+```
+
+---
+
+### Find tasks
+```
+find <keyword>
+```
+```
+find assignment
+```
+Returns all tasks whose description contains the keyword.
+
+---
+
+### Edit a task
+```
+edit <index> [/desc <new description>] [/by <new due>] [/from <new start>] [/to <new end>]
+```
+Provide only the fields you want to change. At least one field is required.
+```
+edit 3 /desc Submit final report
+edit 3 /by next week
+edit 4 /from 21/2/2026 9:00 /to 21/2/2026 10:00
+```
+> `/by` applies to deadlines only; `/from` and `/to` apply to events only.
+
+---
+
+### Delete a task
+```
+delete <index>
+```
+```
+delete 1
+```
+
+---
+
+### Exit
+```
+bye
+```
+
+---
+
+## Notes
+- Tasks are saved automatically after every command and reloaded when Flora starts.
+- Task indexes are based on the order shown by `list`.
