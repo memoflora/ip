@@ -2,7 +2,7 @@
 
 Flora is a desktop chatbot that helps you track your tasks. Type commands into the chat box and Flora will respond.
 
-![Flora screenshot](Ui.png)
+![Flora screenshot](docs/Ui.png)
 
 ---
 
