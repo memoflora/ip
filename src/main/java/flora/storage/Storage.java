@@ -134,6 +134,8 @@ public class Storage {
                     throw new FloraException("Skipped corrupted line: " + line + " | " + e.getMessage());
                 }
             }
+        } catch (java.nio.file.NoSuchFileException e) {
+            return tasks;
         } catch (IOException e) {
             throw new FloraException("Failed loading storage: " + e.getMessage());
         }
