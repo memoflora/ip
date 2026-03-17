@@ -503,7 +503,7 @@ public class FloraTest {
     @Test
     public void parseTodo_noDescription_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("todo"));
-        assertEquals("At least put something bro", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Please provide a description for your todo"));
     }
 
     @Test
@@ -515,7 +515,7 @@ public class FloraTest {
     @Test
     public void parseDeadline_noBy_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("deadline submit report"));
-        assertEquals("At least set a due date bro", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Please provide a due date using /by"));
     }
 
     @Test
@@ -533,14 +533,14 @@ public class FloraTest {
     public void parseEvent_noFrom_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () ->
                 Parser.parse("event meeting /to 6/8/2024 16:00"));
-        assertEquals("At least set a start time bro", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Please provide a start time using /from"));
     }
 
     @Test
     public void parseEvent_noTo_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () ->
                 Parser.parse("event meeting /from 6/8/2024"));
-        assertEquals("At least set an end time bro", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Please provide an end time using /to"));
     }
 
     @Test
@@ -582,13 +582,13 @@ public class FloraTest {
     @Test
     public void parseFind_noKeyword_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("find"));
-        assertEquals("Put a keyword.", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Please provide a keyword to search for"));
     }
 
     @Test
     public void parseMark_noIndex_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("mark"));
-        assertEquals("At least put an index bro", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Please provide a task number"));
     }
 
     @Test
@@ -630,7 +630,7 @@ public class FloraTest {
     @Test
     public void parseEdit_noIndex_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("edit"));
-        assertEquals("At least put an index bro", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Please provide a task number to edit"));
     }
 
     @Test
@@ -641,13 +641,13 @@ public class FloraTest {
     @Test
     public void parseEdit_zeroIndex_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("edit 0 /desc x"));
-        assertTrue(ex.getMessage().contains("Invalid task index"));
+        assertTrue(ex.getMessage().contains("Task number must be a positive number"));
     }
 
     @Test
     public void parseEdit_noFields_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () -> Parser.parse("edit 1"));
-        assertTrue(ex.getMessage().contains("At least change something"));
+        assertTrue(ex.getMessage().contains("No fields to update were provided"));
     }
 
     @Test
@@ -668,14 +668,14 @@ public class FloraTest {
     public void parseEvent_startAfterEnd_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () ->
                 Parser.parse("event meeting /from 6/8/2024 16:00 /to 6/8/2024 14:00"));
-        assertTrue(ex.getMessage().contains("Start time must be before end time"));
+        assertTrue(ex.getMessage().contains("start time must be before the end time"));
     }
 
     @Test
     public void parseEvent_startEqualsEnd_throwsException() {
         FloraException ex = assertThrows(FloraException.class, () ->
                 Parser.parse("event meeting /from 6/8/2024 14:00 /to 6/8/2024 14:00"));
-        assertTrue(ex.getMessage().contains("Start time must be before end time"));
+        assertTrue(ex.getMessage().contains("start time must be before the end time"));
     }
 
     // ==================== Parser: non-existent dates ====================
@@ -1033,7 +1033,7 @@ public class FloraTest {
         tasks.add(task);
         MarkCommand cmd = new MarkCommand(1);
         cmd.execute(tasks, null); // Won't save since task is already marked
-        assertEquals("That task is already marked bro", cmd.getMessage());
+        assertEquals("That task is already marked as done.", cmd.getMessage());
     }
 
     @Test
@@ -1072,7 +1072,7 @@ public class FloraTest {
         tasks.add(new Todo("buy milk")); // Not marked by default
         UnmarkCommand cmd = new UnmarkCommand(1);
         cmd.execute(tasks, null); // Won't save since task is already unmarked
-        assertEquals("That task is already unmarked bro", cmd.getMessage());
+        assertEquals("That task is already marked as not done.", cmd.getMessage());
     }
 
     @Test
