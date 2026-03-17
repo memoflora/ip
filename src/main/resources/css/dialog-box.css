@@ -5,8 +5,8 @@
     -fx-text-fill: #3d0019;
     -fx-font-size: 14px;
     -fx-font-family: "Arial";
-    -fx-background-radius: 12px 12px 0 12px;
-    -fx-border-radius: 12px 12px 0 12px;
+    -fx-background-radius: 12px 0 12px 12px;
+    -fx-border-radius: 12px 0 12px 12px;
     -fx-padding: 8px 12px 8px 12px;
     -fx-wrap-text: true;
 }
@@ -16,8 +16,8 @@
     -fx-border-color: #9b305a;
     -fx-border-width: 1.5px;
     -fx-text-fill: #f5e0e8;
-    -fx-background-radius: 12px 12px 12px 0;
-    -fx-border-radius: 12px 12px 12px 0;
+    -fx-background-radius: 0 12px 12px 12px;
+    -fx-border-radius: 0 12px 12px 12px;
 }
 
 .error-label {
@@ -25,8 +25,8 @@
     -fx-border-color: #ff5555;
     -fx-border-width: 1.5px;
     -fx-text-fill: #fff0f0;
-    -fx-background-radius: 12px 12px 12px 0;
-    -fx-border-radius: 12px 12px 12px 0;
+    -fx-background-radius: 0 12px 12px 12px;
+    -fx-border-radius: 0 12px 12px 12px;
 }
 
 .add-label {
