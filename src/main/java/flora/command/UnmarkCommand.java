@@ -29,7 +29,9 @@ public class UnmarkCommand extends Command {
     @Override
     public void execute(TaskList tasks, Storage storage) throws FloraException {
         if (taskIndex < 1 || taskIndex > tasks.size()) {
-            throw new FloraException("Bro's out of bounds");
+            throw new FloraException("Task " + taskIndex + " does not exist. "
+                    + "You have " + tasks.size() + " task" + (tasks.size() != 1 ? "s" : "") + ". "
+                    + "Use 'list' to see your tasks.");
         }
 
         task = tasks.get(taskIndex);
@@ -49,7 +51,7 @@ public class UnmarkCommand extends Command {
     @Override
     public String getMessage() {
         if (wasAlreadyNotDone) {
-            return "That task is already unmarked bro";
+            return "That task is already marked as not done.";
         }
         return "Ok, I've marked this task as not done yet:\n  " + task;
     }

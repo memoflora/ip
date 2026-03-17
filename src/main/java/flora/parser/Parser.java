@@ -56,7 +56,8 @@ public class Parser {
         case "unmark" -> new UnmarkCommand(getTaskIndex(input, firstSpaceIndex));
         case "list" -> new ListCommand();
         case "bye" -> new ExitCommand();
-        default -> throw new FloraException(getInvalidCommandMessage());
+        default -> throw new FloraException("Sorry, I don't recognize that command.\n"
+                           + "Try one of: todo, deadline, event, list, find, edit, mark, unmark, delete, bye");
         };
     }
 
@@ -70,7 +71,8 @@ public class Parser {
      */
     private static Command parseTodo(String input, int firstSpaceIndex) throws FloraException {
         if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-            throw new FloraException("At least put something bro");
+            throw new FloraException("Please provide a description for your todo.\n"
+                    + "Usage: todo <description>");
         }
 
         String taskDesc = input.substring(firstSpaceIndex + 1);
@@ -91,12 +93,15 @@ public class Parser {
      */
     private static Command parseDeadline(String input, int firstSpaceIndex) throws FloraException {
         if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-            throw new FloraException("At least put something bro");
+            throw new FloraException("Please provide a description for your deadline.\n"
+                    + "Usage: deadline <description> /by <date>");
         }
 
         int byIndex = input.indexOf("/by");
         if (byIndex == -1 || byIndex + 4 >= input.length()) {
-            throw new FloraException("At least set a due date bro");
+            throw new FloraException("Please provide a due date using /by.\n"
+                    + "Usage: deadline <description> /by <date>\n"
+                    + "Example: deadline submit report /by 25/12/2025");
         }
 
         String taskDesc = input.substring(firstSpaceIndex + 1, byIndex - 1);
@@ -121,17 +126,22 @@ public class Parser {
      */
     private static Command parseEvent(String input, int firstSpaceIndex) throws FloraException {
         if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-            throw new FloraException("At least put something bro");
+            throw new FloraException("Please provide a description for your event.\n"
+                    + "Usage: event <description> /from <start> /to <end>");
         }
 
         int fromIndex = input.indexOf("/from");
         if (fromIndex == -1 || fromIndex + 6 >= input.length()) {
-            throw new FloraException("At least set a start time bro");
+            throw new FloraException("Please provide a start time using /from.\n"
+                    + "Usage: event <description> /from <start> /to <end>\n"
+                    + "Example: event team meeting /from 20/3/2025 14:00 /to 20/3/2025 15:00");
         }
 
         int toIndex = input.indexOf("/to");
         if (toIndex == -1 || toIndex + 4 >= input.length()) {
-            throw new FloraException("At least set an end time bro");
+            throw new FloraException("Please provide an end time using /to.\n"
+                    + "Usage: event <description> /from <start> /to <end>\n"
+                    + "Example: event team meeting /from 20/3/2025 14:00 /to 20/3/2025 15:00");
         }
 
         String taskDesc = input.substring(firstSpaceIndex + 1, fromIndex - 1);
@@ -145,7 +155,8 @@ public class Parser {
         LocalDateTime taskEnd = parseDateTime(taskEndStr, "end date/time", LocalTime.MAX);
 
         if (!taskStart.isBefore(taskEnd)) {
-            throw new FloraException("Start time must be before end time.");
+            throw new FloraException("The start time must be before the end time.\n"
+                    + "Please check your /from and /to values.");
         }
 
         return new AddEventCommand(taskDesc, taskStart, taskEnd);
@@ -161,7 +172,8 @@ public class Parser {
      */
     private static Command parseFind(String input, int firstSpaceIndex) throws FloraException {
         if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-            throw new FloraException("Put a keyword.");
+            throw new FloraException("Please provide a keyword to search for.\n"
+                    + "Usage: find <keyword>");
         }
 
         String keyword = input.substring(firstSpaceIndex + 1);
@@ -181,7 +193,9 @@ public class Parser {
      */
     private static Command parseEdit(String input, int firstSpaceIndex) throws FloraException {
         if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-            throw new FloraException("At least put an index bro");
+            throw new FloraException("Please provide a task number to edit.\n"
+                    + "Usage: edit <task number> [/desc <new description>] [/by <new due>] "
+                    + "[/from <new start>] [/to <new end>]");
         }
 
         String afterCommand = input.substring(firstSpaceIndex + 1);
@@ -194,11 +208,13 @@ public class Parser {
         try {
             taskIndex = Integer.parseInt(indexStr);
         } catch (NumberFormatException e) {
-            throw new FloraException("Invalid task index: " + indexStr);
+            throw new FloraException("\"" + indexStr + "\" is not a valid task number. "
+                    + "Please enter a positive whole number.");
         }
 
         if (taskIndex <= 0) {
-            throw new FloraException("Invalid task index: " + taskIndex);
+            throw new FloraException("Task number must be a positive number, but got " + taskIndex + ". "
+                    + "Use 'list' to see your tasks and their numbers.");
         }
 
         String newDesc = extractField(fields, "/desc");
@@ -207,8 +223,9 @@ public class Parser {
         String toStr = extractField(fields, "/to");
 
         if (newDesc == null && byStr == null && fromStr == null && toStr == null) {
-            throw new FloraException("At least change something bro. "
-                    + "Use /desc, /by, /from, or /to.");
+            throw new FloraException("No fields to update were provided.\n"
+                    + "Use one or more of: /desc <new description>, /by <new due date>, "
+                    + "/from <new start>, /to <new end>.");
         }
 
         LocalDateTime newDue = byStr != null ? parseDueDateTime(byStr) : null;
@@ -216,7 +233,8 @@ public class Parser {
         LocalDateTime newEnd = toStr != null ? parseDateTime(toStr, "end date/time", LocalTime.MAX) : null;
 
         if (newStart != null && newEnd != null && !newStart.isBefore(newEnd)) {
-            throw new FloraException("Start time must be before end time.");
+            throw new FloraException("The start time must be before the end time.\n"
+                    + "Please check your /from and /to values.");
         }
 
         return new EditCommand(taskIndex, newDesc, newDue, newStart, newEnd);
@@ -259,18 +277,6 @@ public class Parser {
     }
 
     /**
-     * Returns a randomly selected error message for invalid commands.
-     *
-     * @return A random error message string.
-     */
-    private static String getInvalidCommandMessage() {
-        String[] errorMessages = {"I guess bro", "Whatever that means"};
-        Random random = new Random(System.currentTimeMillis());
-        int randomIndex = random.nextInt(errorMessages.length);
-        return errorMessages[randomIndex];
-    }
-
-    /**
      * Parses a due date string, supporting natural language shortcuts
      * ("today", "tonight", "tomorrow", "next week", "next month") as well as
      * explicit date/time strings.
@@ -307,7 +313,9 @@ public class Parser {
             try {
                 return LocalDate.parse(dateStr, DATE_ONLY_FMT).atTime(defaultTime);
             } catch (DateTimeParseException e2) {
-                throw new FloraException("Invalid " + fieldName + ": " + dateStr);
+                throw new FloraException("\"" + dateStr + "\" is not a valid " + fieldName + ".\n"
+                        + "Use the format d/M/yyyy (e.g. 25/12/2025) or d/M/yyyy H:mm "
+                        + "(e.g. 25/12/2025 14:00).");
             }
         }
     }
@@ -322,7 +330,10 @@ public class Parser {
      */
     private static int getTaskIndex(String input, int firstSpaceIndex) throws FloraException {
         if (firstSpaceIndex == -1 || firstSpaceIndex + 1 >= input.length()) {
-            throw new FloraException("At least put an index bro");
+            String command = input.split(" ")[0];
+            throw new FloraException("Please provide a task number.\n"
+                    + "Usage: " + command + " <task number>\n"
+                    + "Use 'list' to see your tasks and their numbers.");
         }
 
         String taskIndexStr = input.substring(firstSpaceIndex + 1);
@@ -331,7 +342,8 @@ public class Parser {
         try {
             taskIndex = Integer.parseInt(taskIndexStr);
         } catch (NumberFormatException e) {
-            throw new FloraException("Invalid task index: " + e.getMessage());
+            throw new FloraException("\"" + taskIndexStr + "\" is not a valid task number. "
+                    + "Please enter a positive whole number.");
         }
 
         assert taskIndex > 0 : "Task index must be positive, got: " + taskIndex;

@@ -36,7 +36,8 @@ public class AddDeadlineCommand extends Command {
     public void execute(TaskList tasks, Storage storage) throws FloraException {
         deadline = new Deadline(taskDesc, taskDue);
         if (tasks.containsTaskWithDetails(deadline)) {
-            throw new FloraException("This task already exists: " + deadline);
+            throw new FloraException("This task already exists in your list: " + deadline
+                    + "\nNo duplicate tasks were added.");
         }
         tasks.add(deadline);
         storage.save(tasks);

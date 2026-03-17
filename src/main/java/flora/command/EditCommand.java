@@ -47,13 +47,15 @@ public class EditCommand extends Command {
     @Override
     public void execute(TaskList tasks, Storage storage) throws FloraException {
         if (taskIndex > tasks.size()) {
-            throw new FloraException("Invalid task index: " + taskIndex);
+            throw new FloraException("Task " + taskIndex + " does not exist. "
+                    + "You have " + tasks.size() + " task" + (tasks.size() != 1 ? "s" : "") + ". "
+                    + "Use 'list' to see your tasks.");
         }
         Task old = tasks.get(taskIndex);
         editResult = old.edit(newDesc, newDue, newStart, newEnd);
         updatedTask = editResult.task();
         if (tasks.containsTaskWithDetailsExcluding(updatedTask, taskIndex)) {
-            throw new FloraException("The updated task would be a duplicate of an existing task.");
+            throw new FloraException("A task with those details already exists. No changes were made.");
         }
         tasks.set(taskIndex, updatedTask);
         storage.save(tasks);

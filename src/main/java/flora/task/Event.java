@@ -89,7 +89,8 @@ public class Event extends Task {
         LocalDateTime updatedStart = newStart != null ? newStart : this.start;
         LocalDateTime updatedEnd = newEnd != null ? newEnd : this.end;
         if (!updatedStart.isBefore(updatedEnd)) {
-            throw new FloraException("Start time must be before end time.");
+            throw new FloraException("The start time must be before the end time.\n"
+                    + "Please check your /from and /to values.");
         }
         Event updated = new Event(desc, updatedStart, updatedEnd);
         if (done) {

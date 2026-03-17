@@ -29,7 +29,9 @@ public class DeleteCommand extends Command {
     @Override
     public void execute(TaskList tasks, Storage storage) throws FloraException {
         if (taskIndex < 1 || taskIndex > tasks.size()) {
-            throw new FloraException("Bro's out of bounds");
+            throw new FloraException("Task " + taskIndex + " does not exist. "
+                    + "You have " + tasks.size() + " task" + (tasks.size() != 1 ? "s" : "") + ". "
+                    + "Use 'list' to see your tasks.");
         }
 
         task = tasks.remove(taskIndex);

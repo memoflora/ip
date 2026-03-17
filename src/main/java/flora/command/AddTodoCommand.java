@@ -30,7 +30,8 @@ public class AddTodoCommand extends Command {
     public void execute(TaskList tasks, Storage storage) throws FloraException {
         todo = new Todo(taskDesc);
         if (tasks.containsTaskWithDetails(todo)) {
-            throw new FloraException("This task already exists: " + todo);
+            throw new FloraException("This task already exists in your list: " + todo
+                    + "\nNo duplicate tasks were added.");
         }
         tasks.add(todo);
         storage.save(tasks);

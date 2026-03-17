@@ -26,7 +26,7 @@ public class Flora {
             tasks = new TaskList(storage.load());
         } catch (FloraException e) {
             tasks = new TaskList();
-            loadError = "Error loading tasks: " + e.getMessage();
+            loadError = "Failed to load saved tasks: " + e.getMessage();
         }
     }
 
@@ -45,7 +45,7 @@ public class Flora {
             shouldExit = command.isExit();
             return command.getMessage();
         } catch (FloraException e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
     }
 
