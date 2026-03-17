@@ -109,6 +109,14 @@ delete 1
 
 ---
 
+### Show help
+```
+help
+```
+Displays a guide of all available commands.
+
+---
+
 ### Exit
 ```
 bye
