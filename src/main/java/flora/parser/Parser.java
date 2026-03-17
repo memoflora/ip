@@ -16,6 +16,7 @@ import flora.command.DeleteCommand;
 import flora.command.EditCommand;
 import flora.command.ExitCommand;
 import flora.command.FindCommand;
+import flora.command.HelpCommand;
 import flora.command.ListCommand;
 import flora.command.MarkCommand;
 import flora.command.UnmarkCommand;
@@ -55,9 +56,10 @@ public class Parser {
         case "mark" -> new MarkCommand(getTaskIndex(input, firstSpaceIndex));
         case "unmark" -> new UnmarkCommand(getTaskIndex(input, firstSpaceIndex));
         case "list" -> new ListCommand();
+        case "help" -> new HelpCommand();
         case "bye" -> new ExitCommand();
         default -> throw new FloraException("Sorry, I don't recognize that command.\n"
-                           + "Try one of: todo, deadline, event, list, find, edit, mark, unmark, delete, bye");
+                           + "Type 'help' to see all available commands.");
         };
     }
 

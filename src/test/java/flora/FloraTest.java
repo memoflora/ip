@@ -24,6 +24,7 @@ import flora.command.DeleteCommand;
 import flora.command.EditCommand;
 import flora.command.ExitCommand;
 import flora.command.FindCommand;
+import flora.command.HelpCommand;
 import flora.command.ListCommand;
 import flora.command.MarkCommand;
 import flora.command.UnmarkCommand;
@@ -1221,6 +1222,27 @@ public class FloraTest {
     @Test
     public void nonExitCommand_isExit_returnsFalse() throws FloraException {
         Command cmd = Parser.parse("list");
+        assertFalse(cmd.isExit());
+    }
+
+    // ==================== Command: HelpCommand ====================
+
+    @Test
+    public void parser_parseHelp_returnsHelpCommand() throws FloraException {
+        Command cmd = Parser.parse("help");
+        assertInstanceOf(HelpCommand.class, cmd);
+    }
+
+    @Test
+    public void helpCommand_getMessage_returnsNonBlank() {
+        HelpCommand cmd = new HelpCommand();
+        cmd.execute(new TaskList(), null);
+        assertFalse(cmd.getMessage().isBlank());
+    }
+
+    @Test
+    public void helpCommand_isExit_returnsFalse() {
+        HelpCommand cmd = new HelpCommand();
         assertFalse(cmd.isExit());
     }
 
