@@ -1,6 +1,7 @@
 package flora.ui;
 
 import flora.Flora;
+import flora.exception.FloraException;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -55,11 +56,12 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = flora.getResponse(input);
-        boolean isError = response.startsWith("Error: ");
-        DialogBox floraBox = isError
-                ? DialogBox.getFloraErrorDialog(response, floraImage)
-                : DialogBox.getFloraDialog(response, floraImage);
+        DialogBox floraBox;
+        try {
+            floraBox = DialogBox.getFloraDialog(flora.getResponse(input), floraImage);
+        } catch (FloraException e) {
+            floraBox = DialogBox.getFloraErrorDialog(e.getMessage(), floraImage);
+        }
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
                 floraBox

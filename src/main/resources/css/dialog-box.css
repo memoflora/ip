@@ -21,12 +21,8 @@
 }
 
 .error-label {
-    -fx-background-color: #b81c1c;
-    -fx-border-color: #ff5555;
+    -fx-border-color: #e53935;
     -fx-border-width: 1.5px;
-    -fx-text-fill: #fff0f0;
-    -fx-background-radius: 0 12px 12px 12px;
-    -fx-border-radius: 0 12px 12px 12px;
 }
 
 .add-label {

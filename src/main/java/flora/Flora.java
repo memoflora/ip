@@ -36,17 +36,13 @@ public class Flora {
      * @param input The raw user input string.
      * @return The response message to display.
      */
-    public String getResponse(String input) {
+    public String getResponse(String input) throws FloraException {
         assert input != null : "User input must not be null";
-        try {
-            Command command = Parser.parse(input);
-            assert command != null : "Parser must return a non-null command";
-            command.execute(tasks, storage);
-            shouldExit = command.isExit();
-            return command.getMessage();
-        } catch (FloraException e) {
-            return e.getMessage();
-        }
+        Command command = Parser.parse(input);
+        assert command != null : "Parser must return a non-null command";
+        command.execute(tasks, storage);
+        shouldExit = command.isExit();
+        return command.getMessage();
     }
 
     /**
